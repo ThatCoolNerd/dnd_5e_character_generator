@@ -8,15 +8,11 @@ import die
 ##functions
 def stat_gen() : 
     "Roll 4d6, drop the lowest, return total sum"
-        
-    stat = 0
+    
     rolls = [die.rolld(6), die.rolld(6), die.rolld(6), die.rolld(6)]
     rolls.remove(min(rolls))
-        
-    for i in range(3) : 
-        stat += rolls[i]
             
-    return stat
+    return sum(rolls)
 
 def get_alig(alig_list) :
     '''

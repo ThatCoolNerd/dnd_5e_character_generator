@@ -45,24 +45,19 @@ def get_wealth_desc(w) :
         
         if w <= 100 :
             txt = open("wealth_descs/s_poor.txt", "r")
-            
-        if w > 100 and w <= 1250 :
+        elif w <= 1250 :
             txt = open("wealth_descs/poor.txt", "r")
-            
-        if w > 1250 and w <= 5800 :
+        elif w <= 5800 :
             txt = open("wealth_descs/moderate.txt", "r")
-            
-        if w > 5800 and w <= 12500 :
+        elif w <= 12500 :
             txt = open("wealth_descs/wealthy.txt", "r")
-            
-        if w >= 12500 :
+        elif w > 12500 :
             txt = open("wealth_descs/s_wealthy.txt", "r")
             
         pot_descs = txt.read().split(",   ")
         txt.close()
         
-        return pot_descs[int(random.random() * (len(pot_descs) - 1))]
-
+        return random.choice(pot_descs)
 ##body
 class character :
     

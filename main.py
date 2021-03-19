@@ -83,7 +83,7 @@ def print_desc(c) :
     else : gra = "a"
               
     char_id = f"This person is {gra} {c.p_race} {c.p_class} whose name is " \
-                  f"{c.p_name}."
+              f"{c.p_name}."
     
     desc = f"\n{c.p_fname} is {c.p_alignment}, is {c.p_age} years old, and " \
            f"has a net worth of {c.p_net_worth} GP."

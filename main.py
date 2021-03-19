@@ -7,6 +7,9 @@ from dnd_char import stat_gen
 import die
 
 ##functions
+def beautify(s) : print(f"\n\n{s}\n\n")
+def alert(s) : beautify("      " + s)
+
 def menu() :
     "Display menu options"
     
@@ -19,39 +22,26 @@ def menu() :
     print("-----------------------------------")
 
 def req_input() :
-    "Get an int for input"
+    "Request an int for input"
     
     print("Enter a number (0 for menu): ", end = "")
     ina = int(input())
     return ina
     
-def beautify(s) :
-    "Easier to read text formatting"
-    
-    print()
-    print()
-    print(s)
-    print()
-    print()
-    
-def alert(s) : beautify("      " + s)
-
 def save_char(c) :
     "Save character to text file"
     
-    file_name = c.p_race + " " + c.p_class + " - " + c.p_name + ".txt"
+    file_name = f"{c.p_race} {c.p_class} - {c.p_name}.txt"
     savepath  = "./characters/" + file_name
     current   = "./current_character.txt"
+    files     = [savepath, current]
     
-    file = open(savepath, 'w')
-    file.write(print_desc(c))
-    file.close()
+    for a_file in files :
+        file = open(a_file, 'w')
+        file.write(print_desc(c))
+        file.close()
     
-    file = open(current, 'w')
-    file.write(print_desc(c))
-    file.close()
-    
-    alert("'" + file_name + "' saved in characters folder")
+    alert(f"'{file_name}' saved in characters folder")
     
 def make_log_character() :
     "Generate character based on 5e PHB logic"
@@ -68,73 +58,52 @@ def make_ran_character() :
     new = character()
     return new
 
+def format_stats(c) :
+    stats = [c.str, c.dex, c.con, c.wis, c.int, c.cha]
+    form = []
+    ind = "                      "
+    
+    for stat in stats :
+        if stat < 10 :
+            form.append(str(stat).rjust(2, ' '))
+        else :
+            form.append(stat)
+            
+    res = f"\n {ind}|     STR {form[0]}     WIS {form[3]}     |" \
+          f"\n {ind}|     DEX {form[1]}     INT {form[4]}     |" \
+          f"\n {ind}|     CON {form[2]}     CHA {form[5]}     |"
+      
+    return res
+
 def print_desc(c) :
     "Display a brief, cleanly-formatted description of generated character"
     
     #format description with proper grammar
-    if c.p_race == "Elf" :
-        char_id   = "This person is an " + c.p_race + " " + \
-            c.p_class + " whose name is " + c.p_name + "."
-    else :
-        char_id   = "This person is a " + c.p_race + " " + \
-            c.p_class + " whose name is " + c.p_name + "."
+    if c.p_race == "Elf" : gra = "an"
+    else : gra = "a"
+              
+    char_id = f"This person is {gra} {c.p_race} {c.p_class} whose name is " \
+                  f"{c.p_name}."
     
-    desc = "\n" + c.p_fname + " is " + c.p_alignment + ", is " + \
-        str(c.p_age) + " years old, and has a net worth of " + \
-        str(c.p_net_worth) + " GP."
-          
-    #wea = c.p_fname + " " + c.p_wea_desc
-    #wealth descriptions have been removed from this version
+    desc = f"\n{c.p_fname} is {c.p_alignment}, is {c.p_age} years old, and " \
+           f"has a net worth of {c.p_net_worth} GP."
     
     breaker = "- - - - - - - - - - - - - - - - - -" + \
               " - - - - - - - - - - - - - - - - - - - - - -"
-    ind = "                      "
+          
+    stats = format_stats(c)
     
-    #convert stats to text & format appropriately
-    stre = str(c.str)
-    dex  = str(c.dex)
-    con  = str(c.con)
-    wis  = str(c.wis)
-    int  = str(c.int)
-    cha  = str(c.cha)
-    
-    if c.str < 10 :
-        stre = " " + stre
-    
-    if c.dex < 10 :
-        dex = " " + dex
-        
-    if c.con < 10 :
-        con = " " + con
-        
-    if c.wis < 10 :
-        wis = " " + wis
-        
-    if c.int < 10 :
-        int = " " + int
-        
-    if c.cha < 10 :
-        cha = " " + cha
-        
-    stats = "\n"+  ind + "|     STR " + stre + "     WIS " + wis + "     |\n"+\
-            ind + "|     DEX " + dex  + "     INT " + int + "     |\n"+\
-            ind + "|     CON " + con  + "     CHA " + cha + "     |"
-    
-    #return (char_id + "\n" + desc + "\n" + breaker + stats + \
-           #"\n" + breaker + wea)
-    #wealth descriptions have been removed from this version
+    result = f"{char_id}{desc}\n{breaker}{stats}\n{breaker}"
            
-    return (char_id + desc + "\n" + breaker + stats + \
-        "\n" + breaker)
+    return (result)
 ##body
 
 cont  = 0
-count = 0
 has_saved = False
+char_made = False
 curr  = character()
 
-print()
-print()
+print("\n\n")
 menu()
 
 while cont >= 0 :
@@ -145,18 +114,18 @@ while cont >= 0 :
         curr = make_log_character()
         beautify(print_desc(curr))
         has_saved = False
-        count += 1
+        char_made = True
         
     elif cont == 2 : 
         "Make random char, display stats, and reset saved stat"
         curr = make_ran_character()
         beautify(print_desc(curr))
         has_saved = False
-        count += 1
+        char_made = True
         
     elif cont == 8 : 
         "Display errors w/ saving"
-        if count == 0 :
+        if char_made == False :
             alert("ERROR: Generate character before saving.")
         elif has_saved == True :
             alert("ERROR: Character has already been saved.")
@@ -166,7 +135,7 @@ while cont >= 0 :
         
     elif cont == 9 :
         "Print stats if character has been generated"
-        if count == 0 :
+        if char_made == False :
             alert("ERROR: Generate character before attempting to view their stats.")
         else :
             beautify(print_desc(curr))
@@ -174,5 +143,4 @@ while cont >= 0 :
     elif cont == 0 :
         menu()
 
-print()
-print()
+print("\n\n")

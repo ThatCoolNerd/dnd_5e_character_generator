@@ -1,7 +1,7 @@
 #!/user/bin/python
 
 ##imports
-import random
+from random import randint
 
 ##functions
-def rolld(die) : return int((random.random() * die) + 1)
+def rolld(die) : return randint(1, die)

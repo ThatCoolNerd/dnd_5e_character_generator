@@ -114,7 +114,7 @@ class character :
                 
                 if ster_class <= 48 : 
                     self.p_class = "Fighter"
-                elif ster_class > 48 and ster_class <= 96:
+                elif ster_class <= 96:
                     self.p_class = "Barbarian"
                             
         elif self.p_race == "Elf" :
@@ -124,13 +124,13 @@ class character :
                 
                 if ster_class <= 32 : 
                     self.p_class = "Ranger"
-                elif ster_class > 32 and ster_class <= 48 :
+                elif ster_class <= 48 :
                     self.p_class = "Sorcerer"
-                elif ster_class > 48 and ster_class <= 68 :
+                elif ster_class <= 68 :
                     self.p_class = "Cleric"
-                elif ster_class > 68 and ster_class <= 80 :
+                elif ster_class <= 80 :
                     self.p_class = "Wizard"
-                elif ster_class > 80 and ster_class <= 96 :
+                elif ster_class <= 96 :
                     self.p_class = "Rogue"
             
         elif self.p_race == "Halfling" :
@@ -140,68 +140,60 @@ class character :
                 
                 if ster_class <= 25 : 
                     self.p_class = "Bard"
-                elif ster_class > 25 and ster_class <= 48 :
+                elif ster_class <= 48 :
                     self.p_class = "Rogue"
-                elif ster_class > 48 and ster_class <= 82 :
+                elif ster_class <= 82 :
                     self.p_class = "Cleric"
-                elif ster_class > 82 and ster_class <= 92 :
+                elif ster_class <= 92 :
                     self.p_class = "Monk"
-                    
-        #elif self.p_race == "Human" :
-        #   return get_alig(self.p_alig_val)
-        #   real talk, i don't remember why this is here
         
         elif self.p_race == "Dragonborn" :
             if ster_align <= 30 :
                 self.p_alig_val[0] = 1
                 self.p_alig_val[1] = 1
-                
-            elif ster_align > 30 and ster_align <= 60 :
+            elif ster_align <= 60 :
                 self.p_alig_val[0] = 3
                 self.p_alig_val[1] = 1
-                
-            elif ster_align > 60 and ster_align <= 78 :
+            elif ster_align <= 78 :
                 self.p_alig_val[0] = 1
                 self.p_alig_val[1] = 3
-            
-            elif ster_align > 78 and ster_align <= 96 :
+            elif ster_align <= 96 :
                 self.p_alig_val[0] = 3
                 self.p_alig_val[1] = 3
                 
-            if ster_class <= 22 : 
+            if ster_class <= 18 : #numbers need tweaking
                 self.p_class = "Wizard"
-            elif ster_class > 22 and ster_class <= 32 :
+            elif ster_class <= 32 :
                 self.p_class = "Fighter"
-            elif ster_class > 32 and ster_class <= 48 :
+            elif ster_class <= 48 :
                 self.p_class = "Sorcerer"
-            elif ster_class > 48 and ster_class <= 58 :
+            elif ster_class <= 58 :
                 self.p_class = "Warlock"
-            elif ster_class > 58 and ster_class <= 72 :
+            elif ster_class <= 72 :
                 self.p_class = "Paladin"
-            elif ster_class > 72 and ster_class <= 88 :
+            elif ster_class <= 88 :
                 self.p_class = "Rogue"
                 
         elif self.p_race == "Gnome" :
             if ster_align <= 90 :
                 self.p_alig_val[0] = 1
                 self.p_alig_val[1] = 1
-            
-            elif ster_align > 90 and ster_align <= 98 :
+            elif ster_align <= 98 :
                 self.p_alig_val[0] = 3
                 self.p_alig_val[0] = 1
                 
             if ster_align <= 95 :
                 if ster_class <= 18 : 
                     self.p_class = "Wizard"
-                elif ster_class > 18 and ster_class <= 42 :
+                elif ster_class <= 42 :
                     self.p_class = "Bard"
-                elif ster_class > 42 and ster_class <= 48 :
+                elif ster_class <= 48 :
                     self.p_class = "Sorcerer"
-                elif ster_class > 48 and ster_class <= 58 :
+                elif ster_class <= 58 :
                     self.p_class = "Warlock"
-                elif ster_class > 58 and ster_class <= 76 :
+                elif ster_class <= 76 :
                     self.p_class = "Paladin"
-                elif ster_class > 76 and ster_class <= 88 :
+                elif ster_class <= 88 :
                     self.p_class = "Sorcerer"
                     
         elif self.p_race == "Half-Elf" : #numbers might need adjusting
@@ -210,15 +202,15 @@ class character :
                 
                 if ster_class <= 22 : 
                     self.p_class = "Wizard"
-                elif ster_class > 22 and ster_class <= 32 :
+                elif ster_class <= 32 :
                     self.p_class = "Fighter"
-                elif ster_class > 32 and ster_class <= 48 :
+                elif ster_class <= 48 :
                     self.p_class = "Sorcerer"
-                elif ster_class > 48 and ster_class <= 58 :
+                elif ster_class <= 58 :
                     self.p_class = "Warlock"
-                elif ster_class > 58 and ster_class <= 72 :
+                elif ster_class <= 72 :
                     self.p_class = "Paladin"
-                elif ster_class > 72 and ster_class <= 88 :
+                elif ster_class <= 88 :
                     self.p_class = "Rogue"
                     
         elif self.p_race == "Half-Orc" : #numbers might need adjusting
@@ -228,11 +220,11 @@ class character :
                 
                 if ster_class <= 40 : 
                     self.p_class = "Barbarian"
-                elif ster_class > 40 and ster_class <= 80 :
+                elif ster_class <= 80 :
                     self.p_class = "Fighter"
-                elif ster_class > 80 and ster_class <= 90 :
+                elif ster_class <= 90 :
                     self.p_class = "Monk"
-                elif ster_class > 90 and ster_class <= 100 :
+                elif ster_class <= 100 :
                     self.p_class = "Paladin"
                     
         elif self.p_race == "Tiefling" : #numbers might need adjusting
@@ -242,16 +234,18 @@ class character :
                 
                 if ster_class <= 22 : 
                     self.p_class = "Wizard"
-                elif ster_class > 22 and ster_class <= 32 :
+                elif ster_class <= 32 :
                     self.p_class = "Ranger"
-                elif ster_class > 32 and ster_class <= 48 :
+                elif ster_class <= 48 :
                     self.p_class = "Sorcerer"
-                elif ster_class > 48 and ster_class <= 58 :
+                elif ster_class <= 58 :
                     self.p_class = "Warlock"
-                elif ster_class > 58 and ster_class <= 72 :
+                elif ster_class <= 72 :
                     self.p_class = "Paladin"
-                elif ster_class > 72 and ster_class <= 88 :
+                elif ster_class <= 88 :
                     self.p_class = "Rogue"
+                    
+        self.p_alignment = get_alig(self.p_alig_val)
             
     def smart_age(self) :
         '''
@@ -340,16 +334,10 @@ class character :
             if a >= int(.82 * max_tiefling_age) and r <= 89 :
                 a = int(a * tm)
                 
-        #there might be some edge cases where the character's age is not adult
-                
         return (a)
    
     def smart_wealth(self) :
-        '''
-            Make a somewhat logical attempt at calculating wealth
-            
-            This section has the most problems, probably
-        '''
+        'Make a somewhat logical attempt at calculating wealth'
         
         th_s_poor = 100
         th_poor = 1250 - th_s_poor

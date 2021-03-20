@@ -157,9 +157,9 @@ class character :
                 self.p_alig_val[0] = pot_alig_nums[i][0]
                 self.p_alig_val[1] = pot_alig_nums[i][1]
                 
-                for i in range(len(class_nums)) :
-                    if ster_class <= class_nums[i] :
-                        self.p_class = pot_classes[i]
+                for j in range(len(class_nums)) :
+                    if ster_class <= class_nums[j] :
+                        self.p_class = pot_classes[j]
                         break
                 break
         

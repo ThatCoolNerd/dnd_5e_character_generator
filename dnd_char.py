@@ -92,150 +92,77 @@ class character :
             on race according to the 5th edition PHB
         '''
         
-        #sterotypical alignment %
-        ster_align  = die.rolld(100)
+        pot_aligns = []     # potential alignment %s
+        pot_alig_nums = []  # potential 
+        class_nums = []     # class % per race
+        pot_classes = []    # potential classes
         
-        #stereotypical class %
-        ster_class  = die.rolld(100)
+        ster_align = die.rolld(100)    # sterotypical alignment %
+        ster_class = die.rolld(100)    # stereotypical class %
     
         if self.p_race == "Dwarf" :
-            if ster_align <= 98 :
-                self.p_alig_val[0] = 1
-                self.p_alig_val[1] = 1
-                
-                if ster_class <= 48 : 
-                    self.p_class = "Fighter"
-                elif ster_class <= 96:
-                    self.p_class = "Barbarian"
+            pot_aligns = [98]
+            pot_alig_nums = [[1, 1]]
+            class_nums = [48, 96]
+            pot_classes = ["Fighter", "Barbarian"]
                             
         elif self.p_race == "Elf" :
-            if ster_align <= 86 :
-                self.p_alig_val[0] = 3
-                self.p_alig_val[1] = 1
-                
-                if ster_class <= 32 : 
-                    self.p_class = "Ranger"
-                elif ster_class <= 48 :
-                    self.p_class = "Sorcerer"
-                elif ster_class <= 68 :
-                    self.p_class = "Cleric"
-                elif ster_class <= 80 :
-                    self.p_class = "Wizard"
-                elif ster_class <= 96 :
-                    self.p_class = "Rogue"
+            pot_aligns = [88]
+            pot_alig_nums = [[3, 1]]
+            class_nums = [32, 48, 68, 80, 96]
+            pot_classes = ["Ranger", "Sorcerer", "Cleric", "Wizard", "Rogue"]
             
         elif self.p_race == "Halfling" :
-            if ster_align <= 97 :
-                self.p_alig_val[0] = 1
-                self.p_alig_val[1] = 1
-                
-                if ster_class <= 25 : 
-                    self.p_class = "Bard"
-                elif ster_class <= 48 :
-                    self.p_class = "Rogue"
-                elif ster_class <= 82 :
-                    self.p_class = "Cleric"
-                elif ster_class <= 92 :
-                    self.p_class = "Monk"
+            pot_aligns = [97]
+            pot_alig_nums = [[1, 1]]
+            class_nums = [25, 48, 82, 92]
+            pot_classes = ["Bard", "Rogue", "Cleric", "Monk"]
         
         elif self.p_race == "Dragonborn" :
-            if ster_align <= 30 :
-                self.p_alig_val[0] = 1
-                self.p_alig_val[1] = 1
-            elif ster_align <= 60 :
-                self.p_alig_val[0] = 3
-                self.p_alig_val[1] = 1
-            elif ster_align <= 78 :
-                self.p_alig_val[0] = 1
-                self.p_alig_val[1] = 3
-            elif ster_align <= 96 :
-                self.p_alig_val[0] = 3
-                self.p_alig_val[1] = 3
-                
-            if ster_class <= 18 : #numbers need tweaking
-                self.p_class = "Wizard"
-            elif ster_class <= 32 :
-                self.p_class = "Fighter"
-            elif ster_class <= 48 :
-                self.p_class = "Sorcerer"
-            elif ster_class <= 58 :
-                self.p_class = "Warlock"
-            elif ster_class <= 72 :
-                self.p_class = "Paladin"
-            elif ster_class <= 88 :
-                self.p_class = "Rogue"
+            pot_aligns = [30, 60, 78, 96]
+            pot_alig_nums = [[1, 1], [3, 1], [1, 3], [3, 3]]
+            class_nums = [18, 32, 48, 58, 72, 88]
+            pot_classes = ["Wizard", "Fighter", "Sorcerer", "Warlock", \
+                           "Paladin", "Rogue"]
                 
         elif self.p_race == "Gnome" :
-            if ster_align <= 90 :
-                self.p_alig_val[0] = 1
-                self.p_alig_val[1] = 1
-            elif ster_align <= 98 :
-                self.p_alig_val[0] = 3
-                self.p_alig_val[0] = 1
-                
-            if ster_align <= 95 :
-                if ster_class <= 18 : 
-                    self.p_class = "Wizard"
-                elif ster_class <= 42 :
-                    self.p_class = "Bard"
-                elif ster_class <= 48 :
-                    self.p_class = "Sorcerer"
-                elif ster_class <= 58 :
-                    self.p_class = "Warlock"
-                elif ster_class <= 76 :
-                    self.p_class = "Paladin"
-                elif ster_class <= 88 :
-                    self.p_class = "Sorcerer"
+            pot_aligns = [86, 98]
+            pot_alig_nums = [[1, 1], [3, 1]]
+            class_nums = [18, 42, 48, 58, 76, 88]
+            pot_classes = ["Wizard", "Bard", "Sorcerer", "Warlock", \
+                           "Paladin", "Rogue"]
                     
         elif self.p_race == "Half-Elf" : #numbers might need adjusting
-            if ster_align <= 96 :
-                self.p_alig_val[0] = 3
-                
-                if ster_class <= 22 : 
-                    self.p_class = "Wizard"
-                elif ster_class <= 32 :
-                    self.p_class = "Fighter"
-                elif ster_class <= 48 :
-                    self.p_class = "Sorcerer"
-                elif ster_class <= 58 :
-                    self.p_class = "Warlock"
-                elif ster_class <= 72 :
-                    self.p_class = "Paladin"
-                elif ster_class <= 88 :
-                    self.p_class = "Rogue"
+            pot_aligns = [35, 70, 96]
+            pot_alig_nums = [[1, 1], [2, 3], [3, 3]]
+            class_nums = [22, 32, 48, 58, 72, 88]
+            pot_classes = ["Wizard", "Fighter", "Sorcerer", "Warlock", \
+                           "Paladin", "Rogue"]
                     
         elif self.p_race == "Half-Orc" : #numbers might need adjusting
-            if ster_align <= 95 :
-                self.p_alig_val[0] = 3
-                self.p_alig_val[1] = 2
-                
-                if ster_class <= 40 : 
-                    self.p_class = "Barbarian"
-                elif ster_class <= 80 :
-                    self.p_class = "Fighter"
-                elif ster_class <= 90 :
-                    self.p_class = "Monk"
-                elif ster_class <= 100 :
-                    self.p_class = "Paladin"
+            pot_aligns = [95]
+            pot_alig_nums = [[3, 2]]
+            class_nums = [40, 80, 90, 100]
+            pot_classes = ["Barbarian", "Fighter", "Monk", "Paladin"]
                     
         elif self.p_race == "Tiefling" : #numbers might need adjusting
-            if ster_align <= 85 :
-                self.p_alig_val[0] = 3
-                self.p_alig_val[1] = 3
+            pot_aligns = [85]
+            pot_alig_nums = [[3, 3]]
+            class_nums = [22, 32, 48, 58, 72, 88]
+            pot_classes = ["Wizard", "Ranger", "Sorcerer", "Warlock", \
+                           "Paladin", "Rogue"]
+            
+        for i in range(len(pot_aligns)) :
+            if ster_align <= pot_aligns[i] :
+                self.p_alig_val[0] = pot_alig_nums[i][0]
+                self.p_alig_val[1] = pot_alig_nums[i][1]
                 
-                if ster_class <= 22 : 
-                    self.p_class = "Wizard"
-                elif ster_class <= 32 :
-                    self.p_class = "Ranger"
-                elif ster_class <= 48 :
-                    self.p_class = "Sorcerer"
-                elif ster_class <= 58 :
-                    self.p_class = "Warlock"
-                elif ster_class <= 72 :
-                    self.p_class = "Paladin"
-                elif ster_class <= 88 :
-                    self.p_class = "Rogue"
-                    
+                for i in range(len(class_nums)) :
+                    if ster_class <= class_nums[i] :
+                        self.p_class = pot_classes[i]
+                        break
+                break
+        
         self.p_alignment = get_alig(self.p_alig_val)
             
     def smart_age(self) :

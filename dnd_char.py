@@ -4,6 +4,7 @@
 import random
 import ran_gen
 import die
+import dnd_world
 
 ##functions
 def stat_gen() : 
@@ -172,87 +173,23 @@ class character :
             listed in PHB
         '''
         
-        #max ages
-        max_dwarf_age      = 433
-        max_elf_age        = 845
-        max_halfling_age   = 167
-        max_human_age      = 98
-        max_dragonborn_age = 94
-        max_gnome_age      = 522
-        max_halfelf_age    = 222
-        max_halforc_age    = 80
-        max_tiefling_age   = 102
+        r = die.rolld(100) # random percentage
+        r_a_mod = random.randrange(86, 99) / 100 # age modifier
         
-        #adulthood ages
-        dwarf_aa      = 17
-        elf_aa        = 17
-        halfling_aa   = 17
-        human_aa      = 17
-        dragonborn_aa = 15
-        gnome_aa      = 20
-        halfelf_aa    = 17
-        halforc_aa    = 16
-        tiefling_aa   = 17
+        # the following are ordered according to dnd_world
+        maxa = [433, 845, 167, 98, 94, 522, 222, 80, 102] # max ages
+        aa = [17, 17, 17, 17, 15, 20, 17, 16, 17] # adulthood ages
+        r_a_check = [.74, .88, .85, .85, .70, .82, .88, .79, .82] # age check
+        alter_chance = [89, 89, 89, 89, 85, 89, 89, 82, 89] # age alter chance
         
-        #random percentage
-        r  = die.rolld(100)
+        for i in range(len(dnd_world.races)) :
+            if self.p_race == dnd_world.races[i] :
+                age = die.rolld(maxa[i] - aa[i]) + aa[i]
+                if age >= int(r_a_check[i] * maxa[i]) and r < alter_chance[i] :
+                    age = int(age * r_a_mod)
+                break
         
-        #i don't remember what tm stood for, but the intent is to help make
-        #a character's age more random
-        tm = random.randrange(86, 99) / 100
-        
-        #age
-        a = 1
-        
-        #this else-if block is to add variation and ensure the character
-        #is of an age considered adulthood by race
-        
-        if self.p_race == "Dwarf" :
-            a = die.rolld(max_dwarf_age - dwarf_aa) + dwarf_aa
-            if a >= int(.74 * max_dwarf_age) and r <= 89 :
-                a = int(a * tm)
-        
-        elif self.p_race == "Elf" : 
-            a = die.rolld(max_elf_age - elf_aa) + elf_aa
-            if a >= int(.88 * max_elf_age) and r <= 89 :
-                a = int(a * tm)
-        
-        elif self.p_race == "Halfling" : 
-            a = die.rolld(max_halfling_age - halfling_aa) + halfling_aa
-            if a >= int(.85 * max_halfling_age) and r <= 89 :
-                a = int(a * tm)
-    
-        elif self.p_race == "Human" : 
-            a = die.rolld(max_human_age - human_aa) + human_aa
-            if a >= int(.85 * max_human_age) and r <= 89 :
-                a = int(a * tm)
-    
-        elif self.p_race == "Dragonborn" : 
-            a = die.rolld(max_dragonborn_age - dragonborn_aa) + dragonborn_aa
-            if a >= int(.70 * max_dragonborn_age) and r <= 85 :
-                a = int(a * tm)
-    
-        elif self.p_race == "Gnome" : 
-            a = die.rolld(max_gnome_age - gnome_aa) + gnome_aa
-            if a >= int(.82 * max_gnome_age) and r <= 89 :
-                a = int(a * tm)
-    
-        elif self.p_race == "Half-Elf" : 
-            a = die.rolld(max_halfelf_age - halfelf_aa) + halfelf_aa
-            if a >= int(.88 * max_halfelf_age) and r <= 89 :
-                a = int(a * tm)
-    
-        elif self.p_race == "Half-Orc" : 
-            a = die.rolld(max_halforc_age - halforc_aa) + halforc_aa
-            if a >= int(.79 * max_halforc_age) and r <= 82 :
-                a = int(a * tm)
-    
-        elif self.p_race == "Tiefling" : 
-            a = die.rolld(max_tiefling_age - tiefling_aa) + tiefling_aa
-            if a >= int(.82 * max_tiefling_age) and r <= 89 :
-                a = int(a * tm)
-                
-        return (a)
+        return (age)
    
     def smart_wealth(self) :
         'Make a somewhat logical attempt at calculating wealth'

@@ -93,7 +93,7 @@ class character :
         '''
         
         pot_aligns = []     # potential alignment %s
-        pot_alig_nums = []  # potential 
+        pot_alig_nums = []  # alig nums based off of pot_aligns
         class_nums = []     # class % per race
         pot_classes = []    # potential classes
         

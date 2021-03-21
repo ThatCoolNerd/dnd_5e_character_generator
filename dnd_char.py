@@ -202,6 +202,8 @@ class character :
         w_mod = [1.08, 1.02, 1.01, 1.00, 1.02, 1.08, 1.02, .98, 1.03]
         
         p = round(random.uniform(0, 100), 2)
+        rich_luck = random.uniform(0, 100)
+        rl_mod = round(random.uniform(1.2, 2), 2)
         
         for i in range(len(w_brackets)) :
             if p <= w_brackets[i] :
@@ -211,6 +213,8 @@ class character :
                 else :
                     self.p_net_worth = random.randint(w_thresh[i-1], \
                         w_thresh[i])
+                    if w_brackets[i] == w_brackets[-1] and rich_luck > 90:
+                        self.p_net_worth = int(self.p_net_worth * rl_mod)
                     break
             
         for i in range(len(dnd_world.races)) :

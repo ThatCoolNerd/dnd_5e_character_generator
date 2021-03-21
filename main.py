@@ -58,7 +58,7 @@ def make_ran_character() :
     new = character()
     return new
 
-def format_stats(c) :
+def format_desc(c) :
     stats = [c.str, c.dex, c.con, c.wis, c.int, c.cha]
     form = []
     ind = "                      "
@@ -72,27 +72,24 @@ def format_stats(c) :
     res = f"\n {ind}|     STR {form[0]}     WIS {form[3]}     |" \
           f"\n {ind}|     DEX {form[1]}     INT {form[4]}     |" \
           f"\n {ind}|     CON {form[2]}     CHA {form[5]}     |"
+    
+    if c.p_race == "Elf" : grammar = "an"
+    else : grammar = "a"
       
-    return res
+    return [grammar, res]
 
 def print_desc(c) :
     "Display a brief, cleanly-formatted description of generated character"
     
     #format description with proper grammar
-    if c.p_race == "Elf" : gra = "an"
-    else : gra = "a"
-              
-    char_id = f"This person is {gra} {c.p_race} {c.p_class} whose name is " \
-              f"{c.p_name}."
-    
+    formatted = format_desc(c)
+    stats = formatted[1]
+    char_id = f"This person is {formatted[0]} {c.p_race} {c.p_class} " \
+              f"whose name is {c.p_name}."
     desc = f"\n{c.p_fname} is {c.p_alignment}, is {c.p_age} years old, and " \
            f"has a net worth of {c.p_net_worth} GP."
-    
     breaker = "- - - - - - - - - - - - - - - - - -" + \
               " - - - - - - - - - - - - - - - - - - - - - -"
-          
-    stats = format_stats(c)
-    
     result = f"{char_id}{desc}\n{breaker}{stats}\n{breaker}"
            
     return (result)

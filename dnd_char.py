@@ -194,34 +194,30 @@ class character :
     def smart_wealth(self) :
         'Make a somewhat logical attempt at calculating wealth'
         
-        th_s_poor = 100
-        th_poor = 1250 - th_s_poor
-        th_mod = 5800 - th_poor
-        th_wea = 12500 - th_mod
-        th_s_wea = 15000 - th_wea
-        p = round(random.uniform(0, 100), 2)
+        # these are arbitrary
+        w_thresh = [100, 1150, 3700, 6800, 11000]
+        w_brackets = [9.2, 50, 98.2, 99.6, 100]
         
         # ordered according to dnd_world
         w_mod = [1.08, 1.02, 1.01, 1.00, 1.02, 1.08, 1.02, .98, 1.03]
         
-        rand = random.random()
+        p = round(random.uniform(0, 100), 2)
         
-        if p <= 9.2 :
-            self.p_net_worth = int(rand * 100)
-        elif p > 9.2 and p <= 50 :
-            self.p_net_worth = int(rand * random.randrange(1, th_poor)) + 100
-        elif p > 50 and p <= 98.2 :
-            self.p_net_worth = int(rand * random.randrange(1, th_mod)) + 1250
-        elif p > 98.2 and p <= 99.6 :
-            self.p_net_worth = int(rand * random.randrange(1, th_wea)) + 5800
-        elif p > 99.6 :
-            self.p_net_worth = int(rand * random.randrange(1, th_s_wea)) + 9200
+        for i in range(len(w_brackets)) :
+            if p <= w_brackets[i] :
+                if w_brackets[i] == w_brackets[0] :
+                    self.p_net_worth = random.randint(1, w_thresh[i])
+                    break
+                else :
+                    self.p_net_worth = random.randint(w_thresh[i-1], \
+                        w_thresh[i])
+                    break
             
         for i in range(len(dnd_world.races)) :
             if self.p_race == dnd_world.races[i] :
                 self.p_net_worth = int(self.p_net_worth * w_mod[i])
                 break
-                
+        
         # wealth descs not used for now
         self.p_wea_desc = get_wealth_desc(self.p_net_worth)
     

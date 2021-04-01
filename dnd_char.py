@@ -1,10 +1,14 @@
 #!/usr/bin/python
 
 # imports
+from configparser import ConfigParser
 from dnd_world import World
 import ran_gen
 import random
 import die
+
+config = ConfigParser()
+config.read("config.ini")
 
 # functions
 def stat_gen(): 
@@ -41,6 +45,29 @@ def get_alig(alig_list):
 
     return alignment
 
+def get_class_ster_nums(cl, data, md, cv):
+    """
+    cl = class;data = data value to search
+    md = mod (how many # per list); cv = should convert to int
+    """
+    li = []
+    li_s = config[cl][data].split(",")
+    pos = 0
+    
+    if cv:
+        if md == 1:
+            while pos < len(li_s):
+                li.append(int(li_s[pos]))
+                pos += md
+        else:
+            while pos < len(li_s):
+                li.append([int(li_s[pos]), int(li_s[pos+1])])
+                pos += md
+        
+        return li
+    else:
+        return li_s
+
 # body
 class character:
     
@@ -75,76 +102,30 @@ class character:
             on race according to the 5th edition PHB
         """
         
-        pot_aligns = []     # potential alignment %s
-        pot_alig_nums = []  # alig nums based off of pot_aligns
-        class_nums = []     # class % per race
-        pot_classes = []    # potential classes
-        
-        ster_align = die.rolld(100)    # sterotypical alignment %
-        ster_class = die.rolld(100)    # stereotypical class %
-    
-        if self.p_race == "Dwarf":
-            pot_aligns = [98]
-            pot_alig_nums = [[1, 1]]
-            class_nums = [48, 96]
-            pot_classes = ["Fighter", "Barbarian"]
-                            
-        elif self.p_race == "Elf":
-            pot_aligns = [88]
-            pot_alig_nums = [[3, 1]]
-            class_nums = [32, 48, 68, 80, 96]
-            pot_classes = ["Ranger", "Sorcerer", "Cleric", "Wizard", "Rogue"]
+        if self.p_race != "Human":
+            # pot_aligns = get_pot_aligns(self.p_race)
+            pot_aligns = get_class_ster_nums(self.p_race, "pot_aligns", 1, \
+                        True)
+            pot_alig_nums = get_class_ster_nums(self.p_race, "pot_alig_nums", \
+                        2, True)
+            class_nums = get_class_ster_nums(self.p_race, "class_nums", 1, \
+                        True)
+            pot_classes = get_class_ster_nums(self.p_race, "pot_classes", 1, \
+                        False)
             
-        elif self.p_race == "Halfling":
-            pot_aligns = [97]
-            pot_alig_nums = [[1, 1]]
-            class_nums = [25, 48, 82, 92]
-            pot_classes = ["Bard", "Rogue", "Cleric", "Monk"]
-        
-        elif self.p_race == "Dragonborn":
-            pot_aligns = [30, 60, 78, 96]
-            pot_alig_nums = [[1, 1], [3, 1], [1, 3], [3, 3]]
-            class_nums = [18, 32, 48, 58, 72, 88]
-            pot_classes = ["Wizard", "Fighter", "Sorcerer", "Warlock", \
-                           "Paladin", "Rogue"]
+            ster_align = die.rolld(100)    # sterotypical alignment %
+            ster_class = die.rolld(100)    # stereotypical class %
                 
-        elif self.p_race == "Gnome":
-            pot_aligns = [86, 98]
-            pot_alig_nums = [[1, 1], [3, 1]]
-            class_nums = [18, 42, 48, 58, 76, 88]
-            pot_classes = ["Wizard", "Bard", "Sorcerer", "Warlock", \
-                           "Paladin", "Rogue"]
+            for i in range(len(pot_aligns)):
+                if ster_align <= pot_aligns[i]:
+                    self.p_alig_val[0] = pot_alig_nums[i][0]
+                    self.p_alig_val[1] = pot_alig_nums[i][1]
                     
-        elif self.p_race == "Half-Elf": # numbers might need adjusting
-            pot_aligns = [35, 70, 96]
-            pot_alig_nums = [[1, 1], [2, 3], [3, 3]]
-            class_nums = [22, 32, 48, 58, 72, 88]
-            pot_classes = ["Wizard", "Fighter", "Sorcerer", "Warlock", \
-                           "Paladin", "Rogue"]
-                    
-        elif self.p_race == "Half-Orc": # numbers might need adjusting
-            pot_aligns = [95]
-            pot_alig_nums = [[3, 2]]
-            class_nums = [40, 80, 90, 100]
-            pot_classes = ["Barbarian", "Fighter", "Monk", "Paladin"]
-                    
-        elif self.p_race == "Tiefling": # numbers might need adjusting
-            pot_aligns = [85]
-            pot_alig_nums = [[3, 3]]
-            class_nums = [22, 32, 48, 58, 72, 88]
-            pot_classes = ["Wizard", "Ranger", "Sorcerer", "Warlock", \
-                           "Paladin", "Rogue"]
-            
-        for i in range(len(pot_aligns)):
-            if ster_align <= pot_aligns[i]:
-                self.p_alig_val[0] = pot_alig_nums[i][0]
-                self.p_alig_val[1] = pot_alig_nums[i][1]
-                
-                for j in range(len(class_nums)):
-                    if ster_class <= class_nums[j]:
-                        self.p_class = pot_classes[j]
-                        break
-                break
+                    for j in range(len(class_nums)):
+                        if ster_class <= class_nums[j]:
+                            self.p_class = pot_classes[j]
+                            break
+                    break
         
         self.p_alignment = get_alig(self.p_alig_val)
             
@@ -214,185 +195,9 @@ class character:
         ph.reverse()
         p = random.randint(1, 100)
         
-        if self.p_class == "Barbarian":
-            if p <=50:
-                self.str = ph[0]
-                self.con = ph[1]
-                self.dex = ph[2]
-                self.cha = ph[3]
-                self.int = ph[4]
-                self.wis = ph[5]
-            else:
-                self.str = ph[0]
-                self.con = ph[1]
-                self.cha = ph[2]
-                self.dex = ph[3]
-                self.int = ph[4]
-                self.wis = ph[5]
-            
-        elif self.p_class == "Bard":
-            self.cha = ph[0]
-            self.dex = ph[1]
-            self.wis = ph[2]
-            self.con = ph[3]
-            self.int = ph[4]
-            self.str = ph[5]
-            
-        elif self.p_class == "Cleric":
-            if p <= 50:
-                self.wis = ph[0]
-                self.str = ph[1]
-                self.con = ph[2]
-                self.dex = ph[3]
-                self.cha = ph[4]
-                self.int = ph[5]
-            else:
-                self.wis = ph[0]
-                self.con = ph[1]
-                self.str = ph[2]
-                self.dex = ph[3]
-                self.cha = ph[4]
-                self.int = ph[5]
-            
-        elif self.p_class == "Druid":
-            self.wis = ph[0]
-            self.con = ph[1]
-            self.dex = ph[2]
-            self.cha = ph[3]
-            self.int = ph[4]
-            self.str = ph[5]
-            
-        elif self.p_class == "Fighter":
-            if p <= 47:
-                self.str = ph[0]
-                self.con = ph[1]
-                self.dex = ph[2]
-                self.wis = ph[3]
-                self.cha = ph[4]
-                self.int = ph[5]
-            elif p <= 94:
-                self.dex = ph[0]
-                self.con = ph[1]
-                self.wis = ph[2]
-                self.cha = ph[3]
-                self.int = ph[4]
-                self.str = ph[5]
-            else:
-                self.int = ph[0]
-                self.con = ph[1]
-                self.dex = ph[2]
-                self.wis = ph[3]
-                self.str = ph[4]
-                self.cha = ph[5]
-                
-            
-        elif self.p_class == "Monk":
-            self.dex = ph[0]
-            self.wis = ph[1]
-            self.con = ph[2]
-            self.cha = ph[3]
-            self.int = ph[4]
-            self.str = ph[5]
-            
-        elif self.p_class == "Paladin":
-            if p <= 50: 
-                self.str = ph[0]
-                self.cha = ph[1]
-                self.wis = ph[2]
-                self.dex = ph[3]
-                self.con = ph[4]
-                self.int = ph[5]
-            else:
-                self.str = ph[0]
-                self.cha = ph[1]
-                self.con = ph[2]
-                self.dex = ph[3]
-                self.wis = ph[4]
-                self.int = ph[5]
-            
-        elif self.p_class == "Ranger":
-            if p <= 92:
-                self.dex = ph[0]
-                self.wis = ph[1]
-                self.con = ph[2]
-                self.str = ph[3]
-                self.int = ph[4]
-                self.cha = ph[5]
-            else:
-                self.str = ph[0]
-                self.wis = ph[1]
-                self.con = ph[2]
-                self.dex = ph[3]
-                self.int = ph[4]
-                self.cha = ph[5]
-            
-        elif self.p_class == "Rogue":
-            if p <= 60:
-                self.dex = ph[0]
-                self.cha = ph[1]
-                self.con = ph[2]
-                self.wis = ph[3]
-                self.int = ph[4]
-                self.str = ph[5]
-            else:
-                self.dex = ph[0]
-                self.int = ph[1]
-                self.con = ph[2]
-                self.wis = ph[3]
-                self.cha = ph[4]
-                self.str = ph[5]
-            
-        elif self.p_class == "Sorcerer":
-            if p <= 50:
-                self.cha = ph[0]
-                self.con = ph[1]
-                self.dex = ph[2]
-                self.wis = ph[3]
-                self.int = ph[4]
-                self.str = ph[5]
-            else:
-                self.cha = ph[0]
-                self.con = ph[1]
-                self.wis = ph[2]
-                self.dex = ph[3]
-                self.int = ph[4]
-                self.str = ph[5]
-            
-        elif self.p_class == "Wizard":
-            if p <= 50:
-                self.int = ph[0]
-                self.con = ph[1]
-                self.dex = ph[2]
-                self.wis = ph[3]
-                self.str = ph[4]
-                self.cha = ph[5]
-            elif p <= 66:
-                self.int = ph[0]
-                self.dex = ph[1]
-                self.con = ph[2]
-                self.wis = ph[3]
-                self.str = ph[4]
-                self.cha = ph[5]
-            else:
-                self.int = ph[0]
-                self.dex = ph[1]
-                self.wis = ph[2]
-                self.con = ph[3]
-                self.str = ph[4]
-                self.cha = ph[5]
-                
-        elif self.p_class == "Warlock":
-            if p <= 50:
-                self.cha = ph[0]
-                self.con = ph[1]
-                self.dex = ph[2]
-                self.wis = ph[3]
-                self.int = ph[4]
-                self.str = ph[5]
-            else:
-                self.cha = ph[0]
-                self.con = ph[1]
-                self.wis = ph[2]
-                self.dex = ph[3]
-                self.int = ph[4]
-                self.str = ph[5]
+        for perc, stats in World.ST_PERM.value[self.p_class].items():
+            if p <= perc:
+                for st_name, st_pos in stats.items():
+                    setattr(self, st_name, ph[st_pos])
+                break
+            break

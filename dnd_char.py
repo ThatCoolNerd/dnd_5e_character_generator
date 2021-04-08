@@ -7,9 +7,6 @@ import ran_gen
 import random
 import die
 
-config = ConfigParser()
-config.read("config.ini")
-
 # functions
 def stat_gen(): 
     "Roll 4d6, drop the lowest, return total sum"
@@ -24,32 +21,22 @@ def get_alig(alig_list):
         First   [0] is lawful, neutral, chaotic
         Second  [1] is good, neutral, evil
     """
-    
-    alignment = ""
-    if alig_list[0] == 1: 
-        alignment = alignment + "Lawful"
-    elif alig_list[0] == 2: 
-        alignment = alignment + "Neutral"
-    else: 
-        alignment = alignment + "Chaotic"
-        
-    if alig_list[1] == 1: 
-        alignment = alignment + " Good"
-    elif alig_list[1] == 2: 
-        alignment = alignment + " Neutral"
-    else: 
-        alignment = alignment + " Evil"
-        
     if alig_list[0] == 2 and alig_list[1] == 2:
-        alignment = "True Neutral"
-
-    return alignment
+        return "True Neutral"
+    
+    al_li = []
+    for i in range(len(alig_list)):
+        al_li.append(World.ALIG_CHART.value[i][alig_list[i]-1])
+    
+    return f"{al_li[0]} {al_li[1]}"
 
 def get_class_ster_nums(cl, data, md, cv):
     """
-    cl = class;data = data value to search
-    md = mod (how many # per list); cv = should convert to int
+        cl = class;data = data value to search
+        md = mod (how many # per list); cv = should convert to int
     """
+    config = ConfigParser()
+    config.read("configs/config_races.ini")
     li = []
     li_s = config[cl][data].split(",")
     pos = 0
@@ -72,23 +59,23 @@ def get_class_ster_nums(cl, data, md, cv):
 class character:
     
     def __init__(self):
-        #character traits
+        # character traits
         self.p_race      = ran_gen.rrace()
         self.p_class     = ran_gen.rclass()
         self.p_alig_val  = [die.rolld(3), die.rolld(3)]
         self.p_alignment = get_alig(self.p_alig_val)
         
-        #attributes
+        # attributes
         self.p_age       = self.smart_age()
-        self.p_fname     = ran_gen.rfname(self.p_race)
-        self.p_lname     = ran_gen.rlname(self.p_race)
+        self.p_fname     = ran_gen.rname(self.p_race, "First")
+        self.p_lname     = ran_gen.rname(self.p_race, "Last")
         self.p_name      = self.p_fname + " " + self.p_lname
         
-        #financial
+        # financial
         self.p_net_worth = ran_gen.rwealth()
         self.p_wea_desc  = ran_gen.get_wealth_desc(self.p_net_worth)
         
-        #stats
+        # stats
         self.str = stat_gen()
         self.dex = stat_gen()
         self.con = stat_gen()
@@ -101,9 +88,7 @@ class character:
             Helps normalize stereotypical alignment and class based 
             on race according to the 5th edition PHB
         """
-        
         if self.p_race != "Human":
-            # pot_aligns = get_pot_aligns(self.p_race)
             pot_aligns = get_class_ster_nums(self.p_race, "pot_aligns", 1, \
                         True)
             pot_alig_nums = get_class_ster_nums(self.p_race, "pot_alig_nums", \
@@ -135,7 +120,6 @@ class character:
             Max age taken from 5th edition PHB, or D&D Beyond if not
             listed in PHB
         """
-        
         r = die.rolld(100) # random percentage
         r_a_mod = random.randrange(86, 99) / 100 # age modifier
         
@@ -155,13 +139,9 @@ class character:
         return age
    
     def smart_wealth(self):
-        'Make a somewhat logical attempt at calculating wealth'
-        
-        # these are arbitrary
+        "Make a somewhat logical attempt at calculating wealth"
         w_thresh = [100, 1150, 3700, 6800, 11000]
         w_brackets = [9.2, 50, 98.2, 99.6, 100]
-        
-        # ordered according to World
         w_mod = [1.08, 1.02, 1.01, 1.00, 1.02, 1.08, 1.02, .98, 1.03]
         
         p = round(random.uniform(0, 100), 2)
@@ -185,19 +165,29 @@ class character:
                 self.p_net_worth = int(self.p_net_worth * w_mod[i])
                 break
         
-        # wealth descs not used for now
         self.p_wea_desc = ran_gen.get_wealth_desc(self.p_net_worth)
-    
+
     def smart_stats(self):
-        "Optimizes stats based on class based on 5th edition PHB"
+        config = ConfigParser()
         ph = [self.str, self.dex, self.con, self.wis, self.int, self.cha]
         ph.sort()
         ph.reverse()
         p = random.randint(1, 100)
+        thresh = []
+        to_read = ""
         
-        for perc, stats in World.ST_PERM.value[self.p_class].items():
-            if p <= perc:
-                for st_name, st_pos in stats.items():
-                    setattr(self, st_name, ph[st_pos])
+        for i in range(len(World.CLASSES.value)):
+            if self.p_class == World.CLASSES.value[i]:
+                to_read = f"configs/config_{World.CL_SH.value[i]}.ini"
                 break
-            break
+            
+        config.read(to_read)
+        
+        for section in config.sections():
+            thresh.append(int(section))
+        
+        for i in range(len(thresh)):
+            if p <= thresh[i]:
+                for st_name, st_pos in config[str(thresh[i])].items():
+                    setattr(self, st_name, ph[int(st_pos)])
+                break

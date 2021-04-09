@@ -6,32 +6,15 @@ import random
 import die
 import re
 
-# races = World.RACES.value
-# r_sh = World.R_SH.value
-# classes = World.CLASSES.value
-# alig = World.ALIG.value
-
-
 # functions
-def rfname(r):
+def rname(r, pos):
     "Pull a random first name from a text file based on race"
+    if pos == "First": f_or_l = "f"
+    else: f_or_l = "l"
     
     for i in range(len(World.RACES.value)):
         if r == World.RACES.value[i]:
-            path = f"names/{World.R_SH.value[i]}_fnames.txt"
-            name = open(path, "r")
-            break
-    
-    names = name.read().split(';')
-    name.close()
-    return re.sub("\n", "", random.choice(names))
-
-def rlname(r):
-    "Pull a random last name from a text file based on race"
-    
-    for i in range(len(World.RACES.value)):
-        if r == World.RACES.value[i]:
-            path = f"names/{World.R_SH.value[i]}_lnames.txt"
+            path = f"names/{World.R_SH.value[i]}_{f_or_l}names.txt"
             name = open(path, "r")
             break
     

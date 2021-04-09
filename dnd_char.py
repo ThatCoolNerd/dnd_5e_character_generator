@@ -140,7 +140,6 @@ class character:
    
     def smart_wealth(self):
         "Make a somewhat logical attempt at calculating wealth"
-        w_thresh = [100, 1150, 3700, 6800, 11000]
         w_brackets = [9.2, 50, 98.2, 99.6, 100]
         w_mod = [1.08, 1.02, 1.01, 1.00, 1.02, 1.08, 1.02, .98, 1.03]
         
@@ -151,11 +150,13 @@ class character:
         for i in range(len(w_brackets)):
             if p <= w_brackets[i]:
                 if w_brackets[i] == w_brackets[0]:
-                    self.p_net_worth = random.randint(1, w_thresh[i])
+                    self.p_net_worth = random.randint(1, \
+                        World.W_THRESH.value[i])
                     break
                 else:
-                    self.p_net_worth = random.randint(w_thresh[i-1], \
-                        w_thresh[i])
+                    self.p_net_worth = random.randint( \
+                        World.W_THRESH.value[i-1], \
+                        World.W_THRESH.value[i])
                     if w_brackets[i] == w_brackets[-1] and rich_luck > 90:
                         self.p_net_worth = int(self.p_net_worth * rl_mod)
                     break

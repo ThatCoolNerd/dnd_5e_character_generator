@@ -9,7 +9,6 @@ def alert(s): beautify("      " + s)
 
 def menu():
     "Display menu options"
-    
     print(" 1| Generate New Logical Character")
     print(" 2| Generate New Random Character")
     print("-----------------------------------")
@@ -19,15 +18,12 @@ def menu():
     print("-----------------------------------")
 
 def req_input():
-    "Request an int for input"
-    
     print("Enter a number (0 for menu): ", end = "")
     ina = int(input())
     return ina
     
 def save_char(c):
     "Save character to text file"
-    
     file_name = f"{c.p_race} {c.p_class} - {c.p_name}.txt"
     savepath  = "./characters/" + file_name
     current   = "./current_character.txt"
@@ -42,7 +38,6 @@ def save_char(c):
     
 def make_log_character():
     "Generate character based on 5e PHB logic"
-    
     new = character()
     new.logical_stereotype()
     new.smart_stats()
@@ -51,7 +46,6 @@ def make_log_character():
 
 def make_ran_character():
     "Generate character randomly"
-    
     new = character()
     return new
 
@@ -77,8 +71,6 @@ def format_desc(c):
 
 def print_desc(c):
     "Display a brief, cleanly-formatted description of generated character"
-    
-    #format description with proper grammar
     formatted = format_desc(c)
     stats = formatted[1]
     char_id = f"This person is {formatted[0]} {c.p_race} {c.p_class} " \
@@ -88,10 +80,11 @@ def print_desc(c):
     breaker = "- - - - - - - - - - - - - - - - - -" + \
               " - - - - - - - - - - - - - - - - - - - - - -"
     result = f"{char_id}{desc}\n{breaker}{stats}\n{breaker}"
+    result = result + f"\n{c.p_fname} {c.p_wea_desc}"
            
     return result
-# body
 
+# body
 cont  = 0
 has_saved = False
 char_made = False

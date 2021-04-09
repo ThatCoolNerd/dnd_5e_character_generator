@@ -1,1 +1,1 @@
-is poor.,   has a noticable odor about them.,   is poor, but is wearing untattered clothing.,   us well-groomed despite being poor.,   
+is poor.;has a noticable odor about them.;is poor, but is wearing untattered clothing.;us well-groomed despite being poor.

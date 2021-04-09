@@ -21,7 +21,7 @@ def rname(r, pos):
     names = name.read().split(';')
     name.close()
     return re.sub("\n", "", random.choice(names))
-    
+
 def rrace():
     "Return random race"
     return random.choice(World.RACES.value)
@@ -36,22 +36,18 @@ def ralignment():
 
 def rwealth():
     "Return a random amount of wealth (in GP)"
-    return int(die.rolld(15000) * (random.randrange(82, 99) / 100))
+    return int(die.rolld(World.W_THRESH.value[-1]) * \
+        (random.randrange(82, 99) / 100))
 
 def get_wealth_desc(w): 
-        "Return a random description of the character's appearance (GP based)"
+    "Return a random description of the character's appearance (GP based)"
+    wd_txt_name = ["s_poor", "poor", "moderate", "wealthy", "s_wealthy"]
+    
+    for i in range(len(wd_txt_name)):
+        if w <= World.W_THRESH.value[i]:
+            txt = open(f"wealth_descs/{wd_txt_name[i]}.txt", "r")
+            break
         
-        if w <= 100:
-            txt = open("wealth_descs/s_poor.txt", "r")
-        elif w <= 1250:
-            txt = open("wealth_descs/poor.txt", "r")
-        elif w <= 5800:
-            txt = open("wealth_descs/moderate.txt", "r")
-        elif w <= 12500:
-            txt = open("wealth_descs/wealthy.txt", "r")
-        elif w >= 12500:
-            txt = open("wealth_descs/s_wealthy.txt", "r")
-            
-        pot_descs = txt.read().split(",   ")
-        txt.close()
-        return re.sub("\n", "", random.choice(pot_descs))
+    pot_descs = txt.read().split(";")
+    txt.close()
+    return re.sub("\n", "", random.choice(pot_descs))

@@ -2,10 +2,18 @@
 
 # imports
 from dnd_char import character
+from time import sleep
+import os
 
 # functions
 def beautify(s): print(f"\n\n{s}\n\n")
 def alert(s): beautify("      " + s)
+
+def clear():
+    if os.name == "nt":
+        os.system('cls')
+    else:
+        os.system('clear')
 
 def menu():
     "Display menu options"
@@ -19,22 +27,30 @@ def menu():
 
 def req_input():
     print("Enter a number (0 for menu): ", end = "")
-    ina = int(input())
-    return ina
+    return int(input())
     
-def save_char(c):
+def save_char(c, char_made, has_saved):
     "Save character to text file"
-    file_name = f"{c.p_race} {c.p_class} - {c.p_name}.txt"
-    savepath  = "./characters/" + file_name
-    current   = "./current_character.txt"
-    files     = [savepath, current]
     
-    for a_file in files:
-        file = open(a_file, 'w')
-        file.write(print_desc(c))
-        file.close()
-    
-    alert(f"'{file_name}' saved in characters folder")
+    if char_made == False:
+        alert("ERROR: Generate character before saving.")
+    elif has_saved == True:
+        alert("ERROR: Character has already been saved.")
+        return True
+    else: 
+        file_name = f"{c.p_race} {c.p_class} - {c.p_name}.txt"
+        savepath  = "./characters/" + file_name
+        current   = "./current_character.txt"
+        files     = [savepath, current]
+        
+        for a_file in files:
+            file = open(a_file, 'w')
+            file.write(print_desc(c))
+            file.close()
+        
+        alert(f"'{file_name}' saved in characters folder")
+        
+        return True
     
 def make_log_character():
     "Generate character based on 5e PHB logic"
@@ -42,11 +58,19 @@ def make_log_character():
     new.logical_stereotype()
     new.smart_stats()
     new.smart_wealth()
+    new.smart_clothing()
+    new.smart_weapon()
+    
+    print(f"\n\n        - - - - GENERATED LOGICAL CHARACTER - - - -")
+    beautify(print_desc(new))
+    
     return new
 
 def make_ran_character():
     "Generate character randomly"
     new = character()
+    print(f"\n\n        - - - - GENERATED RANDOM CHARACTER - - - -")
+    beautify(print_desc(new))
     return new
 
 def format_desc(c):
@@ -74,51 +98,44 @@ def print_desc(c):
     formatted = format_desc(c)
     stats = formatted[1]
     char_id = f"This person is {formatted[0]} {c.p_race} {c.p_class} " \
-              f"whose name is {c.p_name}."
+        f"whose name is {c.p_name}."
     desc = f"\n{c.p_fname} is {c.p_alignment}, is {c.p_age} years old, and " \
-           f"has a net worth of {c.p_net_worth} GP."
+        "has a net worth of {:,d} GP.".format(c.p_net_worth)
     breaker = "- - - - - - - - - - - - - - - - - -" + \
               " - - - - - - - - - - - - - - - - - - - - - -"
-    result = f"{char_id}{desc}\n{breaker}{stats}\n{breaker}"
-    result = result + f"\n{c.p_fname} {c.p_wea_desc}"
+    result = f"{char_id}{desc}\n{breaker}{stats}\n{breaker}\n" \
+        f"They are wearing {c.p_clothing}, and {c.p_wea_desc}"
+    result = result + f"\n{c.p_fname} is wielding a {c.p_weapon}."
            
     return result
 
 # body
-cont  = 0
+clear()
+cont = 1
 has_saved = False
 char_made = False
-curr  = character()
-
-print("\n")
-menu()
+debug_count = 2000
+curr = character()
 
 while cont >= 0:
     cont = req_input()
+    clear()
     
     if cont == 1:
         "Make logical char, display stats, and reset saved stat"
         curr = make_log_character()
-        beautify(print_desc(curr))
         has_saved = False
         char_made = True
         
     elif cont == 2: 
         "Make random char, display stats, and reset saved stat"
         curr = make_ran_character()
-        beautify(print_desc(curr))
         has_saved = False
         char_made = True
         
     elif cont == 8: 
         "Display errors w/ saving"
-        if char_made == False:
-            alert("ERROR: Generate character before saving.")
-        elif has_saved == True:
-            alert("ERROR: Character has already been saved.")
-        else: 
-            has_saved = True
-            save_char(curr)
+        has_saved = save_char(curr, char_made, has_saved)
         
     elif cont == 9:
         "Print stats if character has been generated"
@@ -127,7 +144,31 @@ while cont >= 0:
         else:
             beautify(print_desc(curr))
             
+    elif cont == 111:
+        for i in range(debug_count):
+            curr = make_log_character()
+            print(f"\n\n        - - - - DEBUG MODE (LOGICAL) ({i} of {debug_count}) - - - -")
+            has_saved = False
+            char_made = True
+            sleep(.01)
+            clear()
+        
+        alert("CHAR GEN SUCCESSFUL - NO BUGS")
+        sleep(3)
+            
+    elif cont == 222:
+        for i in range(debug_count):
+            curr = make_log_character()
+            print(f"        - - - - DEBUG MODE (RANDOM) ({i} of {debug_count}) - - - -")
+            has_saved = False
+            char_made = True
+            sleep(.01)
+            clear()
+            
+        alert("CHAR GEN SUCCESSFUL - NO BUGS")
+        sleep(3)
+            
     elif cont == 0:
         menu()
 
-print("\n")
+clear()

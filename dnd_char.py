@@ -71,9 +71,11 @@ class character:
         self.p_lname     = ran_gen.rname(self.p_race, "Last")
         self.p_name      = self.p_fname + " " + self.p_lname
         
-        # financial
+        # financial & vanity
         self.p_net_worth = ran_gen.rwealth()
         self.p_wea_desc  = ran_gen.get_wealth_desc(self.p_net_worth)
+        self.p_clothing  = ran_gen.rclothing()
+        self.p_weapon    = ran_gen.rweapon()
         
         # stats
         self.str = stat_gen()
@@ -146,26 +148,28 @@ class character:
         p = round(random.uniform(0, 100), 2)
         rich_luck = random.uniform(0, 100)
         rl_mod = round(random.uniform(1.2, 2), 2)
+        new_wealth = 0
         
         for i in range(len(w_brackets)):
             if p <= w_brackets[i]:
                 if w_brackets[i] == w_brackets[0]:
-                    self.p_net_worth = random.randint(1, \
+                    new_wealth = random.randint(1, \
                         World.W_THRESH.value[i])
                     break
                 else:
-                    self.p_net_worth = random.randint( \
+                    new_wealth = random.randint( \
                         World.W_THRESH.value[i-1], \
                         World.W_THRESH.value[i])
                     if w_brackets[i] == w_brackets[-1] and rich_luck > 90:
-                        self.p_net_worth = int(self.p_net_worth * rl_mod)
+                        new_wealth = int(new_wealth * rl_mod)
                     break
             
         for i in range(len(World.RACES.value)):
             if self.p_race == World.RACES.value[i]:
-                self.p_net_worth = int(self.p_net_worth * w_mod[i])
+                new_weath = int(new_wealth * w_mod[i])
                 break
         
+        self.p_net_worth = new_wealth
         self.p_wea_desc = ran_gen.get_wealth_desc(self.p_net_worth)
 
     def smart_stats(self):
@@ -192,3 +196,62 @@ class character:
                 for st_name, st_pos in config[str(thresh[i])].items():
                     setattr(self, st_name, ph[int(st_pos)])
                 break
+    
+    def smart_clothing(self):
+        c = self.p_class
+        arm_budget = int(self.p_net_worth * .38)
+        price = 0
+        pick = ""
+        avail_armor = []
+        
+        if len(World.CL_GEAR_STER.value[c]["ar_kind"]) > 0:
+            armor_type = random.choice(World.CL_GEAR_STER.value[c]["ar_kind"])
+        else:
+            armor_type = random.choice(list(World.ARMOR.value.keys()))
+
+        for arm_key in World.ARMOR.value[armor_type]:
+            avail_armor.append(World.ARMOR.value[armor_type][arm_key].copy())
+            
+        for _ in range(len(avail_armor[0]) + 1):
+            if len(avail_armor[0]) == 0:
+                armor = "slightly-tattered clothing"
+                break
+            
+            pick = random.choice(avail_armor[0])
+            index = avail_armor[0].index(pick)
+            price = avail_armor[1][index]
+
+            if price <= arm_budget:
+                armor = pick
+                break
+            else:
+                avail_armor[0].remove(pick)
+                avail_armor[1].remove(price)
+        
+        self.p_clothing = armor
+        
+    def smart_weapon(self):
+        c = self.p_class
+        weap_budget = int(self.p_net_worth * .1)
+        price = 0
+        pick = ""
+        avail_weap = []
+        
+        weap_type = random.choice(World.CL_GEAR_STER.value[c]["weap_type"])
+        avail_weap = list(World.WEAPON.value[weap_type].keys())
+        
+        for _ in range(len(avail_weap) + 1):
+            if len(avail_weap) == 0:
+                weapon = "only their bare hands"
+                break
+            
+            pick = random.choice(avail_weap)
+            price = World.WEAPON.value[weap_type][pick]
+            
+            if price <= weap_budget:
+                weapon = pick
+                break
+            else:
+                avail_weap.remove(pick)
+
+        self.p_weapon = weapon

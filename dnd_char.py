@@ -2,6 +2,7 @@
 
 # imports
 from configparser import ConfigParser
+from copy import deepcopy as dc
 from dnd_world import World
 import ran_gen
 import random
@@ -85,11 +86,8 @@ class character:
         self.int = stat_gen()
         self.cha = stat_gen()
         
-    def logical_stereotype(self):
-        """
-            Helps normalize stereotypical alignment and class based 
-            on race according to the 5th edition PHB
-        """
+    def logical_stereotype(self, *r):
+        if len(r) > 0: self.p_race = r[0]
         if self.p_race != "Human":
             pot_aligns = get_class_ster_nums(self.p_race, "pot_aligns", 1, \
                         True)
@@ -113,8 +111,10 @@ class character:
                             self.p_class = pot_classes[j]
                             break
                     break
-        
+    
         self.p_alignment = get_alig(self.p_alig_val)
+        
+        
             
     def smart_age(self):
         """
@@ -208,10 +208,10 @@ class character:
             armor_type = random.choice(World.CL_GEAR_STER.value[c]["ar_kind"])
         else:
             armor_type = random.choice(list(World.ARMOR.value.keys()))
-
+        
         for arm_key in World.ARMOR.value[armor_type]:
-            avail_armor.append(World.ARMOR.value[armor_type][arm_key].copy())
-            
+            avail_armor.append(dc(World.ARMOR.value[armor_type][arm_key]))
+        
         for _ in range(len(avail_armor[0]) + 1):
             if len(avail_armor[0]) == 0:
                 armor = "slightly-tattered clothing"

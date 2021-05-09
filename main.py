@@ -2,32 +2,43 @@
 
 # imports
 from dnd_char import character
+from dnd_world import World
 from time import sleep
-import os
 
 # functions
+def clear(): print('\033[H\033[J', end="")
 def beautify(s): print(f"\n\n{s}\n\n")
-def alert(s): beautify("      " + s)
-
-def clear():
-    if os.name == "nt":
-        os.system('cls')
-    else:
-        os.system('clear')
+def alert(s): beautify(f"       {s}")
+def req_input(): return int(input())
 
 def menu():
     "Display menu options"
     print(" 1| Generate New Logical Character")
     print(" 2| Generate New Random Character")
+    print(" 3| Generate Character Of Certain Race")
     print("-----------------------------------")
     print(" 8| Save Character To File")
     print(" 9| Print Stats of Current Character")
     print("-1| Exit Program")
     print("-----------------------------------")
+    
+def display_races():
+    "Display races in D&D"
+    r_ph = "\n\n"
+    for i in range(len(World.RACES.value)):
+        r_ph = r_ph + f"   {i+1}| {World.RACES.value[i]}\n"
+    print(f"{r_ph}\n")
+    
+def display_classes():
+    "Display classes in D&D"
+    c_ph = "\n\n"
+    for i in range(len(World.CLASSES.value)):
+        c_ph = c_ph + f"   {i+1}| {World.CLASSES.value[i]}\n"
+    print(f"{c_ph}\n")
 
-def req_input():
-    print("Enter a number (0 for menu): ", end = "")
-    return int(input())
+def prompt(s):
+    print(s, end="")
+    return req_input()
     
 def save_char(c, char_made, has_saved):
     "Save character to text file"
@@ -52,10 +63,11 @@ def save_char(c, char_made, has_saved):
         
         return True
     
-def make_log_character():
+def make_log_character(*r):
     "Generate character based on 5e PHB logic"
     new = character()
-    new.logical_stereotype()
+    if len(r) > 0: new.logical_stereotype(r[0])
+    else: new.logical_stereotype()
     new.smart_stats()
     new.smart_wealth()
     new.smart_clothing()
@@ -90,22 +102,26 @@ def format_desc(c):
     
     if c.p_race == "Elf": grammar = "an"
     else: grammar = "a"
+    
+    if c.p_weapon == "Dart": weapon = "darts"
+    else: weapon = "a " + c.p_weapon
       
-    return [grammar, res]
+    return [res, weapon, grammar]
 
 def print_desc(c):
     "Display a brief, cleanly-formatted description of generated character"
     formatted = format_desc(c)
-    stats = formatted[1]
-    char_id = f"This person is {formatted[0]} {c.p_race} {c.p_class} " \
+    stats = formatted[0]
+    weapon = formatted[1]
+    char_id = f"This person is {formatted[2]} {c.p_race} {c.p_class} " \
         f"whose name is {c.p_name}."
     desc = f"\n{c.p_fname} is {c.p_alignment}, is {c.p_age} years old, and " \
         "has a net worth of {:,d} GP.".format(c.p_net_worth)
-    breaker = "- - - - - - - - - - - - - - - - - -" + \
-              " - - - - - - - - - - - - - - - - - - - - - -"
+    breaker = "- - - - - - - - - - "
+    for _ in range(2): breaker = breaker + breaker
     result = f"{char_id}{desc}\n{breaker}{stats}\n{breaker}\n" \
         f"They are wearing {c.p_clothing}, and {c.p_wea_desc}"
-    result = result + f"\n{c.p_fname} is wielding a {c.p_weapon}."
+    result = result + f"\n{c.p_fname} is wielding {weapon}."
            
     return result
 
@@ -114,11 +130,11 @@ clear()
 cont = 1
 has_saved = False
 char_made = False
-debug_count = 2000
+debug_count = 500
 curr = character()
 
 while cont >= 0:
-    cont = req_input()
+    cont = prompt("Enter a number (0 for menu): ")
     clear()
     
     if cont == 1:
@@ -132,6 +148,17 @@ while cont >= 0:
         curr = make_ran_character()
         has_saved = False
         char_made = True
+        
+    elif cont == 3: 
+        "Make char with a given race"
+        display_races()
+        selected_race = prompt("Choose a race: ")
+        if selected_race == 0:
+            clear()
+            pass
+        else:
+            clear()
+            curr = make_log_character(World.RACES.value[selected_race-1])
         
     elif cont == 8: 
         "Display errors w/ saving"
@@ -147,27 +174,23 @@ while cont >= 0:
     elif cont == 111:
         for i in range(debug_count):
             curr = make_log_character()
-            print(f"\n\n        - - - - DEBUG MODE (LOGICAL) ({i} of {debug_count}) - - - -")
-            has_saved = False
-            char_made = True
+            print(f"      - - - - DEBUG MODE (LOGICAL) ({i} of {debug_count}) - - - -")
             sleep(.01)
             clear()
-        
+        has_saved = False
+        char_made = True
         alert("CHAR GEN SUCCESSFUL - NO BUGS")
-        sleep(3)
             
     elif cont == 222:
         for i in range(debug_count):
-            curr = make_log_character()
-            print(f"        - - - - DEBUG MODE (RANDOM) ({i} of {debug_count}) - - - -")
-            has_saved = False
-            char_made = True
+            curr = make_ran_character()
+            print(f"      - - - - DEBUG MODE (RANDOM) ({i} of {debug_count}) - - - -")
             sleep(.01)
             clear()
-            
+        has_saved = False
+        char_made = True
         alert("CHAR GEN SUCCESSFUL - NO BUGS")
-        sleep(3)
-            
+        
     elif cont == 0:
         menu()
 

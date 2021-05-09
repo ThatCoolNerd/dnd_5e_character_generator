@@ -1,6 +1,20 @@
 # dnd_5e_character_generator
 A tool for generating 5th edition Dungeons & Dragons characters
 
+# 9 May 2021
+##### New
+- Added option to logically make a character based on race 
+  - No need to make potentially dozens of characters to get a character with the race you wanted
+
+##### Changed
+- Screen clearing utilizes escape characters instead of importing an entire library to do so
+- Deepcopy used for armor generation to prevent possible edge-case scenarios resulting in segfaults
+
+##### Planned
+- Change armor generation to use configs
+- Make a cleaner format for displaying the description of the character to the user
+- More realistic descriptions of wealth
+
 # 14 Apr. 2021
 Gear generation has been added. For ease of legibility, screen clearing has been added. Basic boundary-testing has been added. The enum CL_GEAR_STER in dnd_world.py will probably be moved to using configs in the future.
 

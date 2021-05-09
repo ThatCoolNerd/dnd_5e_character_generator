@@ -14,6 +14,7 @@ A tool for generating 5th edition Dungeons & Dragons characters
 - Change armor generation to use configs
 - Make a cleaner format for displaying the description of the character to the user
 - More realistic descriptions of wealth
+- Implement shield functionality that was added recently
 
 # 14 Apr. 2021
 Gear generation has been added. For ease of legibility, screen clearing has been added. Basic boundary-testing has been added. The enum CL_GEAR_STER in dnd_world.py will probably be moved to using configs in the future.

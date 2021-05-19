@@ -75,7 +75,7 @@ class character:
         # financial & vanity
         self.p_net_worth = ran_gen.rwealth()
         self.p_wea_desc  = ran_gen.get_wealth_desc(self.p_net_worth)
-        self.p_clothing  = ran_gen.rclothing()
+        self.p_clothing  = ran_gen.rarmor()
         self.p_weapon    = ran_gen.rweapon()
         
         # stats
@@ -87,6 +87,7 @@ class character:
         self.cha = stat_gen()
         
     def logical_stereotype(self, *r):
+        """Normalize stereotypical alignment & class based on 5th ed. PHB"""
         if len(r) > 0: self.p_race = r[0]
         if self.p_race != "Human":
             pot_aligns = get_class_ster_nums(self.p_race, "pot_aligns", 1, \
@@ -170,7 +171,7 @@ class character:
                 break
         
         self.p_net_worth = new_wealth
-        self.p_wea_desc = ran_gen.get_wealth_desc(self.p_net_worth)
+        self.p_wea_desc = ran_gen.get_wealth_desc(new_wealth)
 
     def smart_stats(self):
         config = ConfigParser()
@@ -196,22 +197,27 @@ class character:
                 for st_name, st_pos in config[str(thresh[i])].items():
                     setattr(self, st_name, ph[int(st_pos)])
                 break
-    
-    def smart_clothing(self):
+            
+    def smart_gear(self):
+        config = ConfigParser()
+        config.read("configs/config_classes.ini")
         c = self.p_class
+        
         arm_budget = int(self.p_net_worth * .38)
-        price = 0
-        pick = ""
+        weap_budget = int(self.p_net_worth * .1)
+        shield_budg = int(self.p_net_worth * .08)
+        shield_chan = random.randint(1, 100)
+        
         avail_armor = []
         
-        if len(World.CL_GEAR_STER.value[c]["ar_kind"]) > 0:
-            armor_type = random.choice(World.CL_GEAR_STER.value[c]["ar_kind"])
+        if config[c]["ar_kind"].split(",")[0] != '':
+            armor_type = random.choice(config[c]["ar_kind"].split(","))
         else:
             armor_type = random.choice(list(World.ARMOR.value.keys()))
-        
+            
         for arm_key in World.ARMOR.value[armor_type]:
             avail_armor.append(dc(World.ARMOR.value[armor_type][arm_key]))
-        
+            
         for _ in range(len(avail_armor[0]) + 1):
             if len(avail_armor[0]) == 0:
                 armor = "slightly-tattered clothing"
@@ -228,21 +234,12 @@ class character:
                 avail_armor[0].remove(pick)
                 avail_armor[1].remove(price)
         
-        self.p_clothing = armor
-        
-    def smart_weapon(self):
-        c = self.p_class
-        weap_budget = int(self.p_net_worth * .1)
-        price = 0
-        pick = ""
-        avail_weap = []
-        
-        weap_type = random.choice(World.CL_GEAR_STER.value[c]["weap_type"])
+        weap_type = random.choice(config[c]["weap_type"].split(","))
         avail_weap = list(World.WEAPON.value[weap_type].keys())
         
         for _ in range(len(avail_weap) + 1):
             if len(avail_weap) == 0:
-                weapon = "only their bare hands"
+                weapon = "pair of bare hands"
                 break
             
             pick = random.choice(avail_weap)
@@ -253,5 +250,9 @@ class character:
                 break
             else:
                 avail_weap.remove(pick)
-
+                
+        if config[c]["shield"] and 10 <= shield_budg and shield_chan <= 40:
+            weapon += " and Shield"
+        
+        self.p_armor = armor
         self.p_weapon = weapon

@@ -1,6 +1,18 @@
 # dnd_5e_character_generator
 A tool for generating 5th edition Dungeons & Dragons characters
 
+# 18 May 2021
+##### New
+- Shield functionality
+
+##### Changed
+- Armor generation now utilizes configs
+
+##### Planned
+- More realistic descriptions of wealth
+- Differentiate between one-hand and two-hand weapons
+  - For shielded weapons (you can't use shields if you have both of your hands occupied)
+
 # 9 May 2021
 ##### New
 - Added option to logically make a character based on race 
@@ -11,10 +23,10 @@ A tool for generating 5th edition Dungeons & Dragons characters
 - Deepcopy used for armor generation to prevent possible edge-case scenarios resulting in segfaults
 
 ##### Planned
-- Change armor generation to use configs
-- Make a cleaner format for displaying the description of the character to the user
+- ~~Change armor generation to use configs~~
+- ~~Make a cleaner format for displaying the description of the character to the user~~
 - More realistic descriptions of wealth
-- Implement shield functionality that was added recently
+- ~~Implement shield functionality that was added recently~~
 
 # 14 Apr. 2021
 Gear generation has been added. For ease of legibility, screen clearing has been added. Basic boundary-testing has been added. The enum CL_GEAR_STER in dnd_world.py will probably be moved to using configs in the future.

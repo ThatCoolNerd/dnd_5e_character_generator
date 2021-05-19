@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 # imports
+from textwrap import wrap
 from dnd_char import character
 from dnd_world import World
 from time import sleep
@@ -26,14 +27,14 @@ def display_races():
     "Display races in D&D"
     r_ph = "\n\n"
     for i in range(len(World.RACES.value)):
-        r_ph = r_ph + f"   {i+1}| {World.RACES.value[i]}\n"
+        r_ph += f"   {i+1}| {World.RACES.value[i]}\n"
     print(f"{r_ph}\n")
     
 def display_classes():
     "Display classes in D&D"
     c_ph = "\n\n"
     for i in range(len(World.CLASSES.value)):
-        c_ph = c_ph + f"   {i+1}| {World.CLASSES.value[i]}\n"
+        c_ph += f"   {i+1}| {World.CLASSES.value[i]}\n"
     print(f"{c_ph}\n")
 
 def prompt(s):
@@ -70,25 +71,25 @@ def make_log_character(*r):
     else: new.logical_stereotype()
     new.smart_stats()
     new.smart_wealth()
-    new.smart_clothing()
-    new.smart_weapon()
+    new.smart_gear()
     
-    print(f"\n\n        - - - - GENERATED LOGICAL CHARACTER - - - -")
-    beautify(print_desc(new))
+    print("- - - - GENERATED LOGICAL CHARACTER - - - -".center(80, ' '))
+    print(f"{print_desc(new)}\n")
     
     return new
 
 def make_ran_character():
     "Generate character randomly"
     new = character()
-    print(f"\n\n        - - - - GENERATED RANDOM CHARACTER - - - -")
-    beautify(print_desc(new))
+    print("- - - - GENERATED RANDOM CHARACTER - - - -".center(80, ' '))
+    print(f"{print_desc(new)}\n")
     return new
 
 def format_desc(c):
+    "Extra formatting for descriptions"
     stats = [c.str, c.dex, c.con, c.wis, c.int, c.cha]
     form = []
-    ind = "                      "
+    ind = "                       "
     
     for stat in stats:
         if stat < 10:
@@ -96,14 +97,15 @@ def format_desc(c):
         else:
             form.append(stat)
             
-    res = f"\n {ind}|     STR {form[0]}     WIS {form[3]}     |" \
+    res = f" {ind}|     STR {form[0]}     WIS {form[3]}     |" \
           f"\n {ind}|     DEX {form[1]}     INT {form[4]}     |" \
           f"\n {ind}|     CON {form[2]}     CHA {form[5]}     |"
     
     if c.p_race == "Elf": grammar = "an"
     else: grammar = "a"
     
-    if c.p_weapon == "Dart": weapon = "darts"
+    if "Dart" in c.p_weapon:
+        weapon = "a handful of darts"
     else: weapon = "a " + c.p_weapon
       
     return [res, weapon, grammar]
@@ -113,17 +115,35 @@ def print_desc(c):
     formatted = format_desc(c)
     stats = formatted[0]
     weapon = formatted[1]
+    return_list = []
     char_id = f"This person is {formatted[2]} {c.p_race} {c.p_class} " \
         f"whose name is {c.p_name}."
-    desc = f"\n{c.p_fname} is {c.p_alignment}, is {c.p_age} years old, and " \
+    desc = f"{c.p_fname} is {c.p_alignment}, {c.p_age} years old, and " \
         "has a net worth of {:,d} GP.".format(c.p_net_worth)
-    breaker = "- - - - - - - - - - "
-    for _ in range(2): breaker = breaker + breaker
-    result = f"{char_id}{desc}\n{breaker}{stats}\n{breaker}\n" \
-        f"They are wearing {c.p_clothing}, and {c.p_wea_desc}"
-    result = result + f"\n{c.p_fname} is wielding {weapon}."
-           
-    return result
+    breaker = "".center(80, '-')
+    appearance = f"{c.p_fname} is wearing {c.p_clothing}, and {c.p_wea_desc}"
+    armed = f"{c.p_fname} is wielding {weapon}."
+    
+    desc_dict = {
+        "   Description: ": desc,
+        "   Appearance : ": appearance,
+        "   Wielding   : ": armed
+    }
+    
+    return_list.append("\n\n\n" + char_id.center(80, ' '))
+    return_list.append(f"{breaker}\n{stats}\n{breaker}\n")
+    for key, val in desc_dict.items():
+        wrapped = wrap(f"{key}{val}", 77)
+        return_list.append(wrapped[0])
+        if len(wrapped) > 0:
+            for i in range(len(wrapped)-1):
+                return_list.append("".ljust(len(key), ' ') + wrapped[i+1])
+        return_list[-1] += "\n"
+    
+    return_string = ""
+    for line in return_list:
+        return_string += (line + "\n")
+    return(return_string)
 
 # body
 clear()
@@ -169,12 +189,12 @@ while cont >= 0:
         if char_made == False:
             alert("ERROR: Generate character before attempting to view their stats.")
         else:
-            beautify(print_desc(curr))
+            print(f"{print_desc(curr)}\n")
             
     elif cont == 111:
         for i in range(debug_count):
+            print(f"DEBUG MODE (LOG) ({i} of {debug_count})".center(80, '-'))
             curr = make_log_character()
-            print(f"      - - - - DEBUG MODE (LOGICAL) ({i} of {debug_count}) - - - -")
             sleep(.01)
             clear()
         has_saved = False
@@ -183,8 +203,8 @@ while cont >= 0:
             
     elif cont == 222:
         for i in range(debug_count):
+            print(f"DEBUG MODE (RAN) ({i} of {debug_count})".center(80, '-'))
             curr = make_ran_character()
-            print(f"      - - - - DEBUG MODE (RANDOM) ({i} of {debug_count}) - - - -")
             sleep(.01)
             clear()
         has_saved = False

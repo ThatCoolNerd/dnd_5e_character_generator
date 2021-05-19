@@ -7,7 +7,7 @@ A tool for generating 5th edition Dungeons & Dragons characters
 
 ##### Changed
 - Armor generation now utilizes configs
-- Much cleaner character description displayed to the user
+- Make a cleaner format for displaying the description of the character to the user
 
 ##### Planned
 - More realistic descriptions of wealth

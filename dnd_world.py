@@ -17,64 +17,124 @@ class World(Enum):
     ALIG_CHART = [["Lawful", "Neutral", "Chaotic"], \
         ["Good", "Neutral", "Evil"]]
     W_THRESH = [100, 1150, 3700, 6800, 11000]
-    ARMOR = {
-        "Light": {
-            "ar_kind": ["Padded Leather", "Leather", "Studded Leather"],
-            "price": [5, 10, 45]
-        },
-        "Medium": {
-            "ar_kind": ["Hide", "Chain Shirt", "Scale Mail", "Breastplate", "Half Plate"],
-            "price": [10, 50, 50, 400, 750]
-        },
-        "Heavy": {
-            "ar_kind": ["Ring Mail", "Chain Mail", "Splint", "Plate"],
-            "price": [30, 75, 200, 1500]
-        }
-    }
     WEAPON = {
         "Simple Melee": {
-            "Club": .1,
-            "Dagger": 2,
-            "Greatclub": .2,
-            "Handaxe": 5,
-            "Javelin": .5,
-            "Light Hammer": 2,
-            "Mace": 5,
-            "Quarterstaff": .2,
-            "Sickle": 1,
-            "Spear": 1
+            "Club": {
+                "price": .1,
+                "can_wield_shield": True},
+            "Dagger": {
+                "price": 2,
+                "can_wield_shield": True},
+            "Greatclub": {
+                "price": .2,
+                "can_wield_shield": False},
+            "Handaxe": {
+                "price": 5,
+                "can_wield_shield": True},
+            "Javelin": {
+                "price": .5,
+                "can_wield_shield": True},
+            "Light Hammer": {
+                "price": 2,
+                "can_wield_shield": True},
+            "Mace": {
+                "price": 5,
+                "can_wield_shield": True},
+            "Quarterstaff": {
+                "price": .2,
+                "can_wield_shield": True},
+            "Sickle": {
+                "price": 1,
+                "can_wield_shield": True},
+            "Spear": {
+                "price": 1,
+                "can_wield_shield": True}
         },
         "Simple Ranged": {
-            "Light Crossbow": 25,
-            "Dart": .05,
-            "Shortbow": 25,
-            "Sling": .1
+            "Light Crossbow": {
+                "price": 25,
+                "can_wield_shield": False},
+            "Dart": {
+                "price": .05,
+                "can_wield_shield": True},
+            "Shortbow": {
+                "price": 25,
+                "can_wield_shield": False},
+            "Sling": {
+                "price": .1,
+                "can_wield_shield": True}
         },
         "Martial Melee": {
-            "Battleaxe": 10,
-            "Flail": 10,
-            "Glaive": 20,
-            "Greataxe": 30,
-            "Greatsword": 50,
-            "Halberd": 20,
-            "Lance": 10,
-            "Longsword": 15,
-            "Maul": 10,
-            "Morningstar": 15,
-            "Pike": 5,
-            "Rapier": 25,
-            "Scimitar": 25,
-            "Shortsword": 10,
-            "Trident": 5,
-            "Warpick": 5,
-            "Warhammer": 15,
-            "Whip": 2
+            "Battleaxe": {
+                "price": 10,
+                "can_wield_shield": True},
+            "Flail": {
+                "price": 10,
+                "can_wield_shield": True},
+            "Glaive": {
+                "price": 20,
+                "can_wield_shield": False},
+            "Greataxe": {
+                "price": 30,
+                "can_wield_shield": False},
+            "Greatsword": {
+                "price": 50,
+                "can_wield_shield": False},
+            "Halberd": {
+                "price": 20,
+                "can_wield_shield": False},
+            "Lance": {
+                "price": 10,
+                "can_wield_shield": True},
+            "Longsword": {
+                "price": 15,
+                "can_wield_shield": True},
+            "Maul": {
+                "price": 10,
+                "can_wield_shield": False},
+            "Morningstar": {
+                "price": 15,
+                "can_wield_shield": True},
+            "Pike": {
+                "price": 5,
+                "can_wield_shield": False},
+            "Rapier": {
+                "price": 25,
+                "can_wield_shield": True},
+            "Scimitar": {
+                "price": 25,
+                "can_wield_shield": True},
+            "Shortsword": {
+                "price": 10,
+                "can_wield_shield": True},
+            "Trident": {
+                "price": 5,
+                "can_wield_shield": True},
+            "Warpick": {
+                "price": 5,
+                "can_wield_shield": True},
+            "Warhammer": {
+                "price": 15,
+                "can_wield_shield": True},
+            "Whip": {
+                "price": 2,
+                "can_wield_shield": True}
         },
         "Martial Ranged": {
-            "Blowgun": 10,
-            "Hand Crossbow": 75,
-            "Heavy Crossbow": 50,
-            "Longbow": 50,
-            "Net": 1
+            "Blowgun": {
+                "price": 10,
+                "can_wield_shield": True},
+            "Hand Crossbow": {
+                "price": 75,
+                "can_wield_shield": True},
+            "Heavy Crossbow": {
+                "price": 50,
+                "can_wield_shield": False},
+            "Longbow": {
+                "price": 50,
+                "can_wield_shield": False},
+            "Net": {
+                "price": 1,
+                "can_wield_shield": True}
         }
     }

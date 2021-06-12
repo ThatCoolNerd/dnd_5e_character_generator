@@ -199,42 +199,45 @@ class character:
                 break
             
     def smart_gear(self):
-        config = ConfigParser()
-        config.read("configs/config_classes.ini")
+        conf_class = ConfigParser()
+        conf_class.read("configs/config_classes.ini")
+        conf_armor = ConfigParser()
+        conf_armor.read("configs/config_armor.ini")
+        
         c = self.p_class
         
         arm_budget = int(self.p_net_worth * .38)
         weap_budget = int(self.p_net_worth * .1)
         shield_budg = int(self.p_net_worth * .08)
         shield_chan = random.randint(1, 100)
+        can_wield_shield = True
         
         avail_armor = []
         
-        if config[c]["ar_kind"].split(",")[0] != '':
-            armor_type = random.choice(config[c]["ar_kind"].split(","))
+        if conf_class[c]["ar_kind"].split(",")[0] != '':
+            armor_type = random.choice(conf_class[c]["ar_kind"].split(","))
         else:
-            armor_type = random.choice(list(World.ARMOR.value.keys()))
+            armor_type = random.choice(conf_armor.sections())
             
-        for arm_key in World.ARMOR.value[armor_type]:
-            avail_armor.append(dc(World.ARMOR.value[armor_type][arm_key]))
+        for key in conf_armor[armor_type].keys():
+            avail_armor.append(dc(key))
             
-        for _ in range(len(avail_armor[0]) + 1):
-            if len(avail_armor[0]) == 0:
+        for _ in range(len(avail_armor) + 1):
+            if len(avail_armor) == 0:
                 armor = "slightly-tattered clothing"
                 break
             
-            pick = random.choice(avail_armor[0])
-            index = avail_armor[0].index(pick)
-            price = avail_armor[1][index]
+            pick = random.choice(avail_armor)
+            price = conf_armor[armor_type][pick]
+            price = int(price)
 
             if price <= arm_budget:
                 armor = pick
                 break
             else:
-                avail_armor[0].remove(pick)
-                avail_armor[1].remove(price)
+                avail_armor.remove(pick)
         
-        weap_type = random.choice(config[c]["weap_type"].split(","))
+        weap_type = random.choice(conf_class[c]["weap_type"].split(","))
         avail_weap = list(World.WEAPON.value[weap_type].keys())
         
         for _ in range(len(avail_weap) + 1):
@@ -243,7 +246,7 @@ class character:
                 break
             
             pick = random.choice(avail_weap)
-            price = World.WEAPON.value[weap_type][pick]
+            price = World.WEAPON.value[weap_type][pick]["price"]
             
             if price <= weap_budget:
                 weapon = pick
@@ -251,8 +254,18 @@ class character:
             else:
                 avail_weap.remove(pick)
                 
-        if config[c]["shield"] and 10 <= shield_budg and shield_chan <= 40:
-            weapon += " and Shield"
+        shield_conditions = [
+            conf_class[c]["shield"], \
+            shield_budg >= 10, \
+            shield_chan <= 40, \
+            World.WEAPON.value[weap_type][pick]["can_wield_shield"]]
         
-        self.p_armor = armor
+        for cond in shield_conditions:
+            if cond: pass
+            else: can_wield_shield = False
+            
+        if can_wield_shield:
+            weapon += " and shield"
+        
+        self.p_clothing = armor
         self.p_weapon = weapon

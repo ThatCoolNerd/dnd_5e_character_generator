@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 # imports
+from configparser import ConfigParser
 from dnd_world import World
 import random
 import die
@@ -20,8 +21,6 @@ def rname(r, pos):
     
     names = name.read().split(';')
     name.close()
-    #for kind, choices in World.CL_GEAR_STER.value.items():
-    #    print(f"{kind}: {choices}")
     return re.sub("\n", "", random.choice(names))
 
 def rrace(): return random.choice(World.RACES.value)
@@ -33,18 +32,20 @@ def rwealth():
     return int(die.rolld(World.W_THRESH.value[-1]) * \
         (random.randrange(82, 99) / 100))
 
-def rclothing():
+def rarmor():
     "Return a randomly generated article of outside clothing"
-    armor_type = random.choice(list(World.ARMOR.value.keys()))
-    armor = random.choice(World.ARMOR.value[armor_type]["ar_kind"])
-    return armor
+    config = ConfigParser()
+    config.read("configs/config_armor.ini")
+    armor_type = random.choice(config.sections())
+    armor = random.choice(config.items(armor_type))
+    return str(armor[0])
 
 def rweapon():
     kind = random.choice(list(World.WEAPON.value.keys()))
     weapon = random.choice(list(World.WEAPON.value[kind].keys()))
     
     if weapon == "Dart":
-        return "handful of darts"
+        return "a handful of darts"
     else:
         return weapon
 

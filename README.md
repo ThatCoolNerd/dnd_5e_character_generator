@@ -1,6 +1,20 @@
 # dnd_5e_character_generator
 A tool for generating 5th edition Dungeons & Dragons characters
 
+# 11 Jun. 2021
+
+##### Changed
+- Armor generation now utilizes configs exclusively
+- Weapon generation includes two-handed traits for use with shields
+- Shields are no longer generated for logically-generated characters under the following conditions:
+  - Character wielding a two-handed weapon
+  - Character cannot afford a shield
+  - Character not proficient with shields
+
+##### Planned
+- More realistic descriptions of wealth
+- Generate weapons utilizing configs exclusively
+
 # 18 May 2021
 ##### New
 - Shield functionality
@@ -11,8 +25,8 @@ A tool for generating 5th edition Dungeons & Dragons characters
 
 ##### Planned
 - More realistic descriptions of wealth
-- Differentiate between one-hand and two-hand weapons
-  - For shielded weapons (you can't use shields if you have both of your hands occupied)
+- ~~Differentiate between one-hand and two-hand weapons~~
+  - ~~For shielded weapons (you can't use shields if you have both of your hands occupied)~~
 
 # 9 May 2021
 ##### New

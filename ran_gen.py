@@ -2,6 +2,7 @@
 
 # imports
 from configparser import ConfigParser
+from copy import deepcopy as dc
 from dnd_world import World
 import random
 import die
@@ -41,8 +42,9 @@ def rarmor():
     return str(armor[0])
 
 def rweapon():
-    kind = random.choice(list(World.WEAPON.value.keys()))
-    weapon = random.choice(list(World.WEAPON.value[kind].keys()))
+    config = ConfigParser()
+    config.read(random.choice(list(World.WEAP_TYPE.value.values())))
+    weapon = random.choice(config.sections())
     
     if weapon == "Dart":
         return "a handful of darts"
@@ -64,23 +66,3 @@ def get_wealth_desc(w):
     pot_descs = txt.read().split(";")
     txt.close()
     return re.sub("\n", "", random.choice(pot_descs))
-
-def print_weapons():
-    for typee, listt in World.WEAPON.value.items():
-        print(f"{typee}:\n")
-        for weapon, price in listt.items():
-            if price < .1:
-                cost = int(price * 100)
-                currency = "CP"
-            elif price < 1:
-                cost = int(price * 10)
-                currency = "SP"
-            else:
-                cost = price
-                currency = "GP"
-            
-            print("   ", end = "")
-            print(weapon.ljust(18, "."), end = "")
-            print("| {:>2} ".format(cost), end = "")
-            print(currency)
-        print()

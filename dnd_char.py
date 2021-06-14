@@ -203,6 +203,7 @@ class character:
         conf_class.read("configs/config_classes.ini")
         conf_armor = ConfigParser()
         conf_armor.read("configs/config_armor.ini")
+        conf_weap = ConfigParser()
         
         c = self.p_class
         
@@ -213,6 +214,7 @@ class character:
         can_wield_shield = True
         
         avail_armor = []
+        avail_weap = []
         
         if conf_class[c]["ar_kind"].split(",")[0] != '':
             armor_type = random.choice(conf_class[c]["ar_kind"].split(","))
@@ -238,7 +240,9 @@ class character:
                 avail_armor.remove(pick)
         
         weap_type = random.choice(conf_class[c]["weap_type"].split(","))
-        avail_weap = list(World.WEAPON.value[weap_type].keys())
+        conf_weap.read(World.WEAP_TYPE.value[weap_type])
+        for sect in conf_weap.sections():
+            avail_weap.append(dc(sect))
         
         for _ in range(len(avail_weap) + 1):
             if len(avail_weap) == 0:
@@ -246,7 +250,7 @@ class character:
                 break
             
             pick = random.choice(avail_weap)
-            price = World.WEAPON.value[weap_type][pick]["price"]
+            price = float(conf_weap[pick]["price"])
             
             if price <= weap_budget:
                 weapon = pick
@@ -258,7 +262,7 @@ class character:
             conf_class[c]["shield"], \
             shield_budg >= 10, \
             shield_chan <= 40, \
-            World.WEAPON.value[weap_type][pick]["can_wield_shield"]]
+            conf_weap[pick]["can_wield_shield"]]
         
         for cond in shield_conditions:
             if cond: pass

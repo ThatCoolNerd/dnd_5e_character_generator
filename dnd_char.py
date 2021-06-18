@@ -202,7 +202,6 @@ class character:
         conf_class = ConfigParser()
         conf_class.read("configs/config_classes.ini")
         conf_armor = ConfigParser()
-        conf_armor.read("configs/config_armor.ini")
         conf_weap = ConfigParser()
         
         c = self.p_class
@@ -219,10 +218,12 @@ class character:
         if conf_class[c]["ar_kind"].split(",")[0] != '':
             armor_type = random.choice(conf_class[c]["ar_kind"].split(","))
         else:
-            armor_type = random.choice(conf_armor.sections())
+            armor_type = random.choice(list(World.ARM_TYPE.value.keys()))
             
-        for key in conf_armor[armor_type].keys():
-            avail_armor.append(dc(key))
+        conf_armor.read(World.ARM_TYPE.value[armor_type])
+        
+        for section in conf_armor.sections():
+            avail_armor.append(dc(section))
             
         for _ in range(len(avail_armor) + 1):
             if len(avail_armor) == 0:
@@ -230,8 +231,7 @@ class character:
                 break
             
             pick = random.choice(avail_armor)
-            price = conf_armor[armor_type][pick]
-            price = int(price)
+            price = int(conf_armor[pick]["price"])
 
             if price <= arm_budget:
                 armor = pick
@@ -241,6 +241,7 @@ class character:
         
         weap_type = random.choice(conf_class[c]["weap_type"].split(","))
         conf_weap.read(World.WEAP_TYPE.value[weap_type])
+        
         for sect in conf_weap.sections():
             avail_weap.append(dc(sect))
         
@@ -259,14 +260,15 @@ class character:
                 avail_weap.remove(pick)
                 
         shield_conditions = [
-            conf_class[c]["shield"], \
+            conf_class[c]["shield"] == "True", \
             shield_budg >= 10, \
             shield_chan <= 40, \
-            conf_weap[pick]["can_wield_shield"]]
+            conf_weap[pick]["can_wield_shield"] == "True"]
         
         for cond in shield_conditions:
-            if cond: pass
-            else: can_wield_shield = False
+            if not cond:
+                can_wield_shield = False
+                break
             
         if can_wield_shield:
             weapon += " and shield"

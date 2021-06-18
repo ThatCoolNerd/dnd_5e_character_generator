@@ -36,10 +36,9 @@ def rwealth():
 def rarmor():
     "Return a randomly generated article of outside clothing"
     config = ConfigParser()
-    config.read("configs/config_armor.ini")
-    armor_type = random.choice(config.sections())
-    armor = random.choice(config.items(armor_type))
-    return str(armor[0])
+    config.read(random.choice(list(World.ARM_TYPE.value.values())))
+    armor = random.choice(config.sections())
+    return armor
 
 def rweapon():
     config = ConfigParser()

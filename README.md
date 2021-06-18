@@ -1,6 +1,14 @@
 # dnd_5e_character_generator
 A tool for generating 5th edition Dungeons & Dragons characters
 
+# 18 Jun. 2021
+
+##### Changed
+- Armor generation split into separate tiers of armor
+
+##### Planned
+- More realistic descriptions of wealth
+
 # 11 Jun. 2021
 
 ##### Changed
@@ -13,7 +21,7 @@ A tool for generating 5th edition Dungeons & Dragons characters
 
 ##### Planned
 - More realistic descriptions of wealth
-- Generate weapons utilizing configs exclusively
+- ~~Generate weapons utilizing configs exclusively~~
 
 # 18 May 2021
 ##### New

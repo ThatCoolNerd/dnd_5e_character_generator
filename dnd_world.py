@@ -23,3 +23,9 @@ class World(Enum):
         "Martial Melee": "configs/config_martial_melee.ini", 
         "Martial Ranged": "configs/config_martial_ranged.ini"
     }
+    ARM_TYPE = {
+        "Light": "configs/config_armor_light.ini", 
+        "Medium": "configs/config_armor_medium.ini", 
+        "Heavy": "configs/config_armor_heavy.ini"
+    }
+    
